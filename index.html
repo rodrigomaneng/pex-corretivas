@@ -494,7 +494,7 @@ function setSyncStatus(state, msg){
   // Se conectado, mostrar que auto-refresh está ativo
   if(state==='ok'){
     clearInterval(window._countdownTimer);
-    let segundos=600;
+    let segundos=300;
     window._countdownTimer=setInterval(()=>{
       segundos--;
       if(segundos<=0){clearInterval(window._countdownTimer);return;}
