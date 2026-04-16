@@ -248,6 +248,26 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .fat-badge.exec{background:#FEF3C7;color:#92400E}
 .fat-nenhum{padding:1.5rem;text-align:center;font-size:12px;color:var(--text3)}
 
+
+/* ANEXOS */
+.anexo-area{margin-top:6px;border-top:1px solid var(--border);padding-top:6px}
+.anexo-lista{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.anexo-item{display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:10px;color:var(--text2);max-width:180px}
+.anexo-item .anome{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex:1;cursor:pointer}
+.anexo-item .anome:hover{color:var(--blue);text-decoration:underline}
+.anexo-item .adel{cursor:pointer;color:var(--text3);font-size:11px;flex-shrink:0;margin-left:2px}
+.anexo-item .adel:hover{color:var(--red)}
+.anexo-btn{display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:5px;border:1px dashed var(--border);background:transparent;font-size:10px;color:var(--text3);cursor:pointer;transition:all .15s}
+.anexo-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+.anexo-input{display:none}
+.card.tem-anexo .anexo-btn{border-color:var(--green);color:var(--green)}
+
+/* OBSERVAÇÃO */
+.obs-area{margin-top:5px}
+.obs-input{width:100%;font-size:10px;font-family:var(--sans);color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:4px 7px;resize:none;outline:none;line-height:1.4;min-height:28px;transition:border-color .15s}
+.obs-input:focus{border-color:var(--blue);background:var(--surface)}
+.obs-input::placeholder{color:var(--text3)}
+.card.tem-obs .obs-input{border-color:#D1FAE5;background:#F0FDF4}
 </style>
 </head>
 <body>
@@ -360,9 +380,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
     </select>
     <button class="btn" onclick="toggleAll(true)">+ Expandir</button>
     <button class="btn" onclick="toggleAll(false)">− Recolher</button>
-    <button class="btn red" id="btn-clear-fat" onclick="clearFaturadas()" style="display:none">Limpar faturadas</button>
-    <button class="btn" id="btn-clear-exec" onclick="clearExecutadas()" style="display:none;border-color:#D97706;color:#D97706">Limpar executadas</button>
-    <button class="btn" id="btn-clear-prog" onclick="clearProgramadas()" style="display:none;border-color:var(--blue);color:var(--blue)">Limpar programadas</button>
+    <!-- botões de limpar removidos para evitar acidentes em uso compartilhado -->
     <div class="filter-info" id="filter-info"></div>
   </div>
 
@@ -498,7 +516,7 @@ let activeCls=new Set();
 let _syncTimer=null;
 
 function cardId(dayDt,idx){return 'c-'+dayDt.replace(/-/g,'')+'-'+idx;}
-function getExtra(id){return cardExtra[id]||(cardExtra[id]={data:'',sup:'',tec:''});}
+function getExtra(id){return cardExtra[id]||(cardExtra[id]={data:'',sup:'',tec:'',rel:[],obs:''});}
 
 function salvarLocal(){
   localStorage.setItem(LS_STATE_KEY, JSON.stringify({prog:progState,exec:execState,fat:fatState,extra:cardExtra}));
@@ -558,11 +576,23 @@ async function carregarDoSheets(){
     recalcTotais();
     document.getElementById('update-date').textContent=jDados.atualizado||new Date().toLocaleDateString('pt-BR');
 
-    // Atualizar estados dos checkboxes
-    progState  = jSt.prog  || {};
-    execState  = jSt.exec  || {};
-    fatState   = jSt.fat   || {};
-    cardExtra  = jSt.extra || {};
+    // Atualizar estados — só substituir se o Sheets tiver dados reais
+    // Nunca zerar se o retorno vier vazio (protege contra perda de dados)
+    const temDadosSalvos = jSt && (
+      Object.keys(jSt.prog||{}).length > 0 ||
+      Object.keys(jSt.exec||{}).length > 0 ||
+      Object.keys(jSt.fat||{}).length > 0  ||
+      Object.keys(jSt.extra||{}).length > 0
+    );
+    if(temDadosSalvos){
+      progState  = jSt.prog  || progState;
+      execState  = jSt.exec  || execState;
+      fatState   = jSt.fat   || fatState;
+      cardExtra  = jSt.extra || cardExtra;
+    } else {
+      // Sheets ainda não tem dados salvos — manter o que está em memória/local
+      carregarLocal();
+    }
     salvarLocal();
 
     recalcListas();
@@ -572,7 +602,7 @@ async function carregarDoSheets(){
     setSyncStatus('ok','Sincronizado · '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+' · '+REGISTROS.length+' corretivas');
     render();renderFaturados();updateKPIs();updateProgress();updateBtns();
     clearInterval(window._autoRefresh);
-    window._autoRefresh=setInterval(()=>{if(SCRIPT_URL)carregarDoSheets();},5*60*1000);
+    window._autoRefresh=setInterval(()=>{if(SCRIPT_URL)carregarDoSheets();},30*60*1000); // auto-refresh a cada 30 minutos
   }catch(e){
     setSyncStatus('err','Erro: '+e.message);
     carregarLocal();
@@ -724,9 +754,7 @@ function refreshCard(id){
 }
 
 function updateBtns(){
-  document.getElementById('btn-clear-fat').style.display=Object.values(fatState).some(Boolean)?'':'none';
-  document.getElementById('btn-clear-prog').style.display=Object.values(progState).some(Boolean)?'':'none';
-  document.getElementById('btn-clear-exec').style.display=Object.values(execState).some(Boolean)?'':'none';
+  // Botões de limpar removidos — função mantida para compatibilidade
 }
 
 function toggleFatBreakdown(){
@@ -1002,6 +1030,101 @@ function toggleFatGrupo(id){
   const open = body.classList.toggle('open');
   if(chev) chev.classList.toggle('open', open);
 }
+
+function salvarObs(id, val){
+  cardExtra[id]||(cardExtra[id]={data:'',sup:'',tec:'',rel:[],obs:''});
+  cardExtra[id].obs = val;
+  const card = document.querySelector('[data-id="'+id+'"]');
+  if(card) card.classList.toggle('tem-obs', val.trim().length>0);
+  salvarLocal();
+  debouncedSync();
+}
+
+function autoResizeObs(el){
+  el.style.height='auto';
+  el.style.height=(el.scrollHeight)+'px';
+}
+
+function renderTodosObs(){
+  Object.keys(cardExtra).forEach(id=>{
+    const obs = cardExtra[id]?.obs||'';
+    const el = document.getElementById('obs-'+id);
+    if(el && !el.value) { el.value=obs; autoResizeObs(el); }
+    const card = document.querySelector('[data-id="'+id+'"]');
+    if(card) card.classList.toggle('tem-obs', obs.trim().length>0);
+  });
+}
+function triggerAnexo(id){
+  // Garantir que input existe no DOM
+  const input = document.getElementById('ai-'+id);
+  if(input) input.click();
+}
+
+function adicionarAnexo(id, input){
+  if(!input.files.length) return;
+  cardExtra[id]||(cardExtra[id]={data:'',sup:'',tec:'',rel:[],obs:''});
+  if(!cardExtra[id].rel) cardExtra[id].rel=[];
+  const files = Array.from(input.files);
+  let pending = files.length;
+  files.forEach(file=>{
+    if(file.size > 5*1024*1024){ alert('Arquivo '+file.name+' muito grande (máx 5MB)'); pending--; return; }
+    const reader = new FileReader();
+    reader.onload = e=>{
+      cardExtra[id].rel.push({nome:file.name, tipo:file.type, data:e.target.result});
+      pending--;
+      if(pending===0){
+        salvarLocal();
+        renderAnexosCard(id);
+        debouncedSync();
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+
+function renderAnexosCard(id){
+  const lista = document.getElementById('al-'+id);
+  if(!lista) return;
+  const rel = cardExtra[id]?.rel || [];
+  lista.innerHTML = rel.map((a,i)=>
+    `<div class="anexo-item">
+      <span class="anome" title="${a.nome}" onclick="abrirAnexo('${id}',${i})">${a.nome}</span>
+      <span class="adel" onclick="removerAnexo('${id}',${i})" title="Remover">✕</span>
+    </div>`
+  ).join('');
+  // Marcar card se tem anexos
+  const card = document.querySelector(`[data-id="${id}"]`);
+  if(card) card.classList.toggle('tem-anexo', rel.length > 0);
+}
+
+function abrirAnexo(id, idx){
+  const a = cardExtra[id]?.rel?.[idx];
+  if(!a) return;
+  const win = window.open();
+  if(a.tipo === 'application/pdf'){
+    win.document.write(`<iframe src="${a.data}" width="100%" height="100%" style="border:none;position:fixed;inset:0"></iframe>`);
+  } else {
+    win.document.write(`<img src="${a.data}" style="max-width:100%;display:block;margin:auto">`);
+  }
+}
+
+function removerAnexo(id, idx){
+  if(!cardExtra[id]?.rel) return;
+  const nome = cardExtra[id].rel[idx]?.nome;
+  if(!confirm('Remover "'+nome+'"?')) return;
+  cardExtra[id].rel.splice(idx,1);
+  salvarLocal();
+  renderAnexosCard(id);
+  debouncedSync();
+}
+
+function renderTodosAnexos(){
+  // Chamar após render() para popular as listas de anexos nos cards visíveis
+  Object.keys(cardExtra).forEach(id=>{
+    if(cardExtra[id]?.rel?.length) renderAnexosCard(id);
+  });
+}
 // função renderFaturados reescrita acima
 
 
@@ -1177,6 +1300,16 @@ function render(){
                   <div class="cval">${r.valor>0?fmt(r.valor):'—'}</div>
                   <div class="cprop">${ex.data?fmtData(ex.data)+' · ':''  }${r.mes}</div>
                 </div>
+              </div>
+              <div class="obs-area">
+                <textarea class="obs-input" rows="1" placeholder="Observação..." id="obs-${id}" oninput="salvarObs('${id}',this.value)" onfocus="autoResizeObs(this)" onblur="autoResizeObs(this)">${ex.obs||''}</textarea>
+              </div>
+              <div class="anexo-area">
+                <div class="anexo-lista" id="al-${id}"></div>
+                <label class="anexo-btn" onclick="triggerAnexo('${id}')">
+                  <span style="font-size:12px">📎</span> Anexar relatório
+                </label>
+                <input class="anexo-input" type="file" id="ai-${id}" accept=".pdf,image/*" multiple onchange="adicionarAnexo('${id}',this)">
               </div>
             </div>`;
           }).join('')}
