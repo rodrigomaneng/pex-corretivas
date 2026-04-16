@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PEX · Corretivas · 08/04/2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F4F0;--surface:#fff;--surface2:#F0EFE9;--border:#E2E0D8;
+  --text:#1A1916;--text2:#6B6960;--text3:#A09E96;
+  --blue:#1E3A5F;--blue-lt:#EEF3F9;
+  --red:#B91C1C;--red-lt:#FEE2E2;
+  --amber:#92400E;--amber-lt:#FEF3C7;
+  --green:#065F46;--green-lt:#D1FAE5;
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+/* TOP */
+.top{background:var(--blue);color:#fff;padding:.9rem 1.5rem;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.top-inner{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;gap:1rem;flex-wrap:wrap}
+.top h1{font-size:14px;font-weight:500}
+.top-sub{font-size:11px;opacity:.6;margin-top:2px;font-family:var(--mono)}
+.top-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.top-btn{padding:4px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:11px;cursor:pointer;font-family:var(--sans);white-space:nowrap}
+.top-btn:hover{background:rgba(255,255,255,.2)}
+.top-ver{font-size:10px;opacity:.5;font-family:var(--mono)}
+/* MAIN */
+.main{max-width:1400px;margin:0 auto;padding:1.25rem 1rem}
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) minmax(0,1fr) minmax(180px,2fr);gap:10px;margin-bottom:1.25rem}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem}
+.kpi-l{font-size:10px;color:var(--text3);margin-bottom:4px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em}
+.kpi-v{font-size:22px;font-weight:600;color:var(--blue)}
+.kpi-s{font-size:10px;color:var(--text3);margin-top:2px}
+/* KPI FATURADO EXPANDÍVEL */
+.kpi-fat-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;grid-column:span 2}
+.kpi-fat-top{padding:.85rem 1rem .6rem;display:flex;align-items:flex-start;gap:1rem;cursor:pointer;user-select:none}
+.kpi-fat-top:hover{background:var(--surface2)}
+.kpi-fat-main{flex:1}
+.kpi-fat-toggle{font-size:11px;color:var(--text3);margin-top:2px;white-space:nowrap;padding:2px 6px;border-radius:4px;border:1px solid var(--border);background:var(--surface2)}
+.kpi-fat-meses{display:none;border-top:1px solid var(--border);padding:.6rem .85rem .75rem}
+.kpi-fat-meses.open{display:block}
+.kpi-mes-row{display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid var(--surface2)}
+.kpi-mes-row:last-child{border-bottom:none;font-weight:600;color:var(--green)}
+.kpi-mes-label{font-size:11px;color:var(--text2);min-width:110px;text-transform:capitalize}
+.kpi-mes-bar{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.kpi-mes-fill{height:100%;background:var(--green);border-radius:3px;transition:width .4s}
+.kpi-mes-val{font-size:11px;font-family:var(--mono);color:var(--green);min-width:80px;text-align:right}
+.kpi-mes-n{font-size:10px;color:var(--text3);min-width:50px;text-align:right}
+.kpi.c-fat .kpi-v{color:var(--green)}
+.kpi.c-pend .kpi-v{color:var(--amber)}
+.kpi.c-prog .kpi-v{color:var(--blue)}
+.kpi.c-exec .kpi-v{color:#D97706}
+/* PROGRESS */
+.prog-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem}
+.prog-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.prog-title{font-size:12px;font-weight:500;color:var(--text2)}
+.prog-count{font-size:12px;font-family:var(--mono);color:var(--text2)}
+.prog-bar{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:.75rem}
+.prog-fill{height:100%;background:var(--green);border-radius:4px;transition:width .4s}
+.prog-clients{display:flex;flex-wrap:wrap;gap:10px}
+.pc{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.pc-bar{height:5px;width:50px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.pc-fill{height:100%;background:var(--green);border-radius:3px;transition:width .3s}
+/* TOOLBAR */
+.toolbar{display:flex;gap:7px;margin-bottom:.75rem;flex-wrap:wrap;align-items:center}
+.srch{padding:7px 11px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:12px;outline:none;min-width:220px;font-family:var(--sans);color:var(--text)}
+.srch:focus{border-color:var(--blue)}
+.sel{font-size:12px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;outline:none;font-family:var(--sans)}
+.sel:focus{border-color:var(--blue)}
+.btn{padding:7px 14px;border-radius:8px;border:1px solid var(--border);font-size:12px;cursor:pointer;background:var(--surface);color:var(--text2);font-family:var(--sans);transition:all .15s}
+.btn:hover{background:var(--surface2)}
+.btn.red{border-color:var(--red);color:var(--red)}
+.btn.red:hover{background:var(--red-lt)}
+.filter-info{font-size:11px;color:var(--blue);padding:5px 10px;background:var(--blue-lt);border-radius:6px;display:none}
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem}
+.li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;transition:all .15s;user-select:none}
+.li:hover{border-color:var(--text3)}
+.li.dim{opacity:.3}
+.ld{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+/* DAY BLOCK */
+.day-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:10px;transition:box-shadow .15s}
+.day-block:hover{box-shadow:0 2px 14px rgba(0,0,0,.06)}
+.day-block.urgent{border-left:3px solid var(--red)}
+.day-hdr{display:flex;align-items:center;gap:10px;padding:.65rem 1rem;cursor:pointer;user-select:none;background:#FAFAF8;border-bottom:1px solid transparent;transition:background .15s}
+.day-hdr:hover{background:var(--surface2)}
+.day-hdr.open{border-bottom-color:var(--border)}
+.dbadge{font-size:12px;font-weight:600;padding:3px 10px;border-radius:6px;background:var(--blue);color:#fff;min-width:56px;text-align:center;flex-shrink:0;font-family:var(--mono)}
+.dwd{font-size:11px;color:var(--text3);min-width:32px;flex-shrink:0}
+.dpills{display:flex;gap:4px;flex-wrap:wrap;flex:1;min-width:0}
+.pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.dstats{display:flex;gap:14px;margin-left:auto;flex-shrink:0}
+.dstat{font-size:11px;color:var(--text3);white-space:nowrap;font-family:var(--mono)}
+.dstat strong{color:var(--text);font-weight:500}
+.dprog{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--green-lt);color:var(--green);font-family:var(--mono);font-weight:600;white-space:nowrap}
+.dprog.zero{background:var(--surface2);color:var(--text3)}
+.chev{font-size:11px;color:var(--text3);transition:transform .2s;margin-left:6px;flex-shrink:0}
+.chev.open{transform:rotate(180deg)}
+.day-body{display:none}
+.day-body.open{display:block}
+/* CARD GRID */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:8px;padding:.85rem}
+/* CARD */
+.card{border-radius:8px;border:1px solid var(--border);padding:.75rem .9rem;background:var(--surface);transition:border-color .15s,box-shadow .15s;cursor:default}
+.card:hover{border-color:#C0BEB6;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.card.faturada{opacity:.5;background:var(--surface2)}
+.card.faturada .ccli{text-decoration:line-through;text-decoration-color:var(--text3)}
+.card.urg{border-left:3px solid var(--red)}
+.card.med{border-left:3px solid #D97706}
+.ctop{display:flex;align-items:center;gap:5px;margin-bottom:5px;flex-wrap:wrap}
+.cpill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.dlimit{font-size:9px;padding:1px 6px;border-radius:3px;white-space:nowrap;flex-shrink:0;font-family:var(--mono)}
+.uf-tag{font-size:10px;color:var(--text3);margin-left:auto;background:var(--surface2);padding:1px 5px;border-radius:3px}
+.ccli{font-size:12px;color:var(--text);line-height:1.4;margin-bottom:3px;font-weight:500;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.cdesc{font-size:10px;color:var(--text3);line-height:1.4;margin-bottom:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+/* CAMPOS */
+.cfields{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
+.cf{background:var(--surface2);border-radius:5px;padding:4px 7px}
+.cf-l{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:1px}
+.cf-v{font-size:11px;color:var(--text);font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.cf-v.empty{color:var(--text3);font-weight:400;font-style:italic}
+/* OS TAG */
+.os-tag{font-size:9px;font-family:var(--mono);color:var(--text3);background:var(--surface2);padding:1px 5px;border-radius:3px;white-space:nowrap}
+/* FOOTER CARD */
+.cfoot{display:flex;justify-content:space-between;align-items:center}
+.cval{font-size:13px;font-weight:600;color:var(--blue);font-family:var(--mono)}
+.cprop{font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+/* STATUS TAG */
+.status-tag{font-size:9px;padding:1px 6px;border-radius:3px;white-space:nowrap;background:var(--amber-lt);color:var(--amber)}
+/* CHECKBOXES */
+.checks-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.check-wrap{display:flex;align-items:center;gap:5px}
+/* Programado — azul */
+.prog-cb{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;appearance:none;-webkit-appearance:none;background:var(--surface);position:relative;transition:all .15s;flex-shrink:0}
+.prog-cb:checked{background:var(--blue);border-color:var(--blue)}
+.prog-cb:checked::after{content:'';position:absolute;left:3px;top:1px;width:5px;height:8px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(40deg)}
+.prog-label{font-size:10px;color:var(--text3);cursor:pointer;user-select:none}
+.card.programada .prog-label{color:var(--blue);font-weight:500}
+/* Executado — laranja */
+.exec-cb{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;appearance:none;-webkit-appearance:none;background:var(--surface);position:relative;transition:all .15s;flex-shrink:0}
+.exec-cb:checked{background:#D97706;border-color:#D97706}
+.exec-cb:checked::after{content:'';position:absolute;left:3px;top:1px;width:5px;height:8px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(40deg)}
+.exec-label{font-size:10px;color:var(--text3);cursor:pointer;user-select:none}
+.card.executada .exec-label{color:#D97706;font-weight:500}
+/* Faturado — verde */
+.fat-cb{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;appearance:none;-webkit-appearance:none;background:var(--surface);position:relative;transition:all .15s;flex-shrink:0}
+.fat-cb:checked{background:var(--green);border-color:var(--green)}
+.fat-cb:checked::after{content:'';position:absolute;left:3px;top:1px;width:5px;height:8px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(40deg)}
+.fat-label{font-size:10px;color:var(--text3);cursor:pointer;user-select:none}
+.card.faturada .fat-label{color:var(--green);font-weight:500}
+/* Estados visuais do card */
+.card.programada{border-left:3px solid var(--blue)!important;background:#F5F8FF}
+.card.executada{border-left:3px solid #D97706!important;background:#FFFBEB}
+.card.faturada{opacity:.55;background:var(--surface2)}
+.card.faturada .ccli{text-decoration:line-through;text-decoration-color:var(--text3)}
+/* Combinações */
+.card.programada.faturada{border-left:3px solid var(--green)!important;background:var(--surface2);opacity:.6}
+.card.executada.faturada{border-left:3px solid var(--green)!important;background:var(--surface2);opacity:.6}
+.card.programada.executada{border-left:3px solid #D97706!important;background:#FFFBEB}
+/* DAY FOOTER */
+.dfoot{display:flex;gap:6px;padding:.5rem .85rem .75rem;border-top:1px solid var(--surface2);flex-wrap:wrap}
+.fp{font-size:10px;padding:3px 10px;border-radius:5px;background:var(--surface2);color:var(--text2);font-family:var(--mono)}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border-radius:16px;padding:1.5rem;max-width:580px;width:90%;max-height:82vh;overflow-y:auto;border:1px solid var(--border)}
+.modal h3{font-size:14px;font-weight:600;margin-bottom:1rem;color:var(--blue)}
+.modal-close{float:right;cursor:pointer;font-size:18px;color:var(--text3);background:none;border:none;line-height:1}
+.modal table{width:100%;font-size:12px;border-collapse:collapse}
+.modal th{padding:6px 10px;text-align:left;background:var(--blue);color:#fff;font-weight:500}
+.modal td{padding:5px 10px;border-bottom:1px solid var(--border)}
+/* NO RESULTS */
+.no-res{text-align:center;padding:3rem;color:var(--text3);font-size:13px}
+/* CAMPOS EDITÁVEIS DO CARD */
+.card-edit{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:6px}
+.cedit{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:3px 6px;position:relative}
+.cedit-l{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:1px}
+.cedit-val{font-size:11px;color:var(--text);font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:3px;min-height:16px}
+.cedit-val.empty{color:var(--text3);font-style:italic;font-weight:400}
+.cedit-val .arr{font-size:8px;color:var(--text3);flex-shrink:0}
+.cedit input[type=date]{width:100%;border:none;background:transparent;font-size:11px;font-family:var(--sans);color:var(--text);outline:none;padding:0;cursor:pointer}
+.cedit input[type=date]::-webkit-calendar-picker-indicator{opacity:.5;cursor:pointer;width:12px;height:12px}
+.cedit-drop{display:none;position:absolute;top:100%;left:0;right:0;min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:7px;box-shadow:0 4px 16px rgba(0,0,0,.14);z-index:150;max-height:160px;overflow-y:auto;margin-top:2px}
+.cedit-drop.open{display:block}
+.cedit-opt{padding:5px 10px;font-size:11px;color:var(--text);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cedit-opt:hover{background:var(--surface2)}
+.cedit-opt.sel{background:var(--blue-lt);color:var(--blue);font-weight:500}
+.cedit-opt.clr{color:var(--text3);font-style:italic;border-bottom:1px solid var(--border)}
+.card.programada .cedit{background:#EEF3F9;border-color:#BFDBFE}
+/* RESPONSIVE */
+@media(max-width:900px){.kpis{grid-template-columns:repeat(4,1fr)}.dstats{display:none}.cgrid{grid-template-columns:1fr}.cfields{grid-template-columns:1fr}}
+@media print{.toolbar,.legend,.top-meta{display:none!important}.day-body{display:block!important}body{background:#fff}}
+
+/* SYNC STATUS */
+.sync-bar{display:flex;align-items:center;gap:8px;padding:.5rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:1rem;font-size:11px;color:var(--text2)}
+.sync-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .3s}
+.sync-dot.ok{background:#22C55E}
+.sync-dot.loading{background:#F59E0B;animation:pulse .8s infinite}
+.sync-dot.err{background:#EF4444}
+.sync-dot.off{background:#D1D5DB}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.sync-cfg{background:var(--surface);border:1px solid #FCD34D;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem}
+.sync-cfg h4{font-size:13px;font-weight:600;color:#92400E;margin-bottom:.5rem}
+.sync-cfg p{font-size:12px;color:var(--text2);margin-bottom:.5rem;line-height:1.6}
+.sync-cfg input{width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--border);font-size:12px;font-family:var(--mono);color:var(--text);outline:none;background:var(--surface)}
+.sync-cfg input:focus{border-color:var(--blue)}
+.sync-cfg .cfg-btn{margin-top:.6rem;padding:6px 16px;border-radius:7px;background:var(--blue);color:#fff;border:none;font-size:12px;cursor:pointer;font-family:var(--sans)}
+.sync-cfg .cfg-btn:hover{background:#163354}
+
+
+/* SEÇÃO FATURADOS */
+.fat-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.25rem}
+.fat-section-hdr{display:flex;align-items:center;gap:10px;padding:.85rem 1.1rem;background:#F0FDF4;border-bottom:1px solid #D1FAE5;cursor:pointer;user-select:none;transition:background .15s}
+.fat-section-hdr:hover{background:#E8FAF0}
+.fat-section-title{font-size:14px;font-weight:600;color:var(--green)}
+.fat-section-count{font-size:12px;font-family:var(--mono);color:var(--green);margin-left:auto}
+/* Barra de busca e filtro dentro do painel faturados */
+.fat-toolbar{display:flex;gap:8px;padding:.75rem 1rem;background:#F9FFF9;border-bottom:1px solid #D1FAE5;flex-wrap:wrap;align-items:center}
+.fat-srch{flex:1;min-width:180px;padding:6px 10px;border-radius:7px;border:1px solid #A7F3D0;font-size:12px;font-family:var(--sans);color:var(--text);outline:none;background:#fff}
+.fat-srch:focus{border-color:var(--green)}
+.fat-sel{padding:6px 10px;border-radius:7px;border:1px solid #A7F3D0;font-size:12px;font-family:var(--sans);background:#fff;color:var(--text);cursor:pointer;outline:none}
+.fat-sel:focus{border-color:var(--green)}
+.fat-total-bar{font-size:11px;font-family:var(--mono);color:var(--green);padding:4px 10px;background:#D1FAE5;border-radius:6px;white-space:nowrap}
+/* Grupos por cliente */
+.fat-grupo{border-bottom:1px solid #E8FAF0}
+.fat-grupo:last-child{border-bottom:none}
+.fat-grupo-hdr{display:flex;align-items:center;gap:8px;padding:.6rem 1rem;background:#F6FEF9;cursor:pointer;user-select:none;transition:background .15s}
+.fat-grupo-hdr:hover{background:#ECFDF5}
+.fat-grupo-pill{font-size:11px;font-weight:700;padding:2px 9px;border-radius:4px}
+.fat-grupo-info{font-size:11px;color:var(--text2);flex:1}
+.fat-grupo-val{font-size:12px;font-weight:600;font-family:var(--mono);color:var(--green)}
+.fat-grupo-chev{font-size:9px;color:var(--text3);transition:transform .2s;margin-left:6px}
+.fat-grupo-chev.open{transform:rotate(180deg)}
+.fat-grupo-body{display:none}
+.fat-grupo-body.open{display:block}
+/* Linhas de OS */
+.fat-row{display:grid;grid-template-columns:110px 1fr 1fr 90px 100px 90px;gap:0;border-top:1px solid #E8FAF0;transition:background .1s}
+.fat-row:hover{background:#F0FDF4}
+.fat-row-hdr{background:#E8FAF0;font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.fat-cell{padding:6px 10px;font-size:11px;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:flex;align-items:center}
+.fat-cell.mono{font-family:var(--mono);font-size:10px}
+.fat-cell.right{justify-content:flex-end;font-weight:600;color:var(--green)}
+.fat-cell.center{justify-content:center}
+.fat-badge{font-size:9px;padding:1px 6px;border-radius:3px;background:#D1FAE5;color:#065F46;font-family:var(--mono);white-space:nowrap}
+.fat-badge.exec{background:#FEF3C7;color:#92400E}
+.fat-nenhum{padding:1.5rem;text-align:center;font-size:12px;color:var(--text3)}
+
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-inner">
+    <div>
+      <h1>Cronograma de Corretivas — Abril 2026</h1>
+      <div class="top-sub">PEX · Base real de compras · <span id="update-date">08/04/2026</span> · v11 · 08/04/2026 · ao vivo</div>
+    </div>
+    <div class="top-meta">
+      <button class="top-btn" onclick="openModal('modal-limites')">Prazos por cliente</button>
+      <button class="top-btn" onclick="exportCSV()">Exportar status</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PRAZOS -->
+<div class="modal-bg" id="modal-limites" onclick="if(event.target===this)closeModal('modal-limites')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-limites')">✕</button>
+    <h3>Datas de corte por cliente</h3>
+    <table>
+      <tr><th>Cliente</th><th>Corte</th><th>Último dia útil</th></tr>
+      <tr style="background:#FFF1F2"><td>Porto Seguro</td><td style="text-align:center;font-family:var(--mono)">10</td><td style="color:#B91C1C;font-weight:600;font-family:var(--mono)">10/04 (Sex)</td></tr>
+      <tr style="background:#FCE7F3"><td>O Boticário / Bradesco</td><td style="text-align:center;font-family:var(--mono)">15</td><td style="color:#9D174D;font-weight:600;font-family:var(--mono)">15/04 (Qua)</td></tr>
+      <tr style="background:#D1FAE5"><td>Fundação Bradesco</td><td style="text-align:center;font-family:var(--mono)">17</td><td style="color:#065F46;font-weight:600;font-family:var(--mono)">17/04 (Sex)</td></tr>
+      <tr style="background:#E0F2FE"><td>Leroy Merlin / Smart Fit</td><td style="text-align:center;font-family:var(--mono)">18</td><td style="color:#0369A1;font-weight:600;font-family:var(--mono)">17/04 (Sex)</td></tr>
+      <tr style="background:#FFF7ED"><td>Autozone / Carrefour / Sam's / Assaí / Mercantil / Giga / Gbarbosa / GM / Basf / Green4T / Banco Mercantil</td><td style="text-align:center;font-family:var(--mono)">20</td><td style="color:#9A3412;font-weight:600;font-family:var(--mono)">20/04 (Seg)</td></tr>
+      <tr style="background:#F0FDF4"><td>Obramax</td><td style="text-align:center;font-family:var(--mono)">25</td><td style="color:#166534;font-weight:600;font-family:var(--mono)">24/04 (Sex)</td></tr>
+      <tr><td>Atakarejo / Zamp-BK / Tenda</td><td style="text-align:center">—</td><td style="font-weight:600">sem limite · 30/04</td></tr>
+    </table>
+    <p style="font-size:11px;color:var(--text3);margin-top:.75rem">Corretivas distribuídas automaticamente nos dias úteis anteriores ao corte de cada cliente. Feriados 21/04 (Tiradentes) excluídos.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- CONFIG GOOGLE SHEETS (some quando configurado) -->
+  <div class="sync-cfg" id="sync-cfg" style="display:none">
+    <h4>Conectar ao Google Sheets para salvar o progresso em tempo real</h4>
+    <p>Cole a URL do Apps Script da sua planilha. Os dados do cronograma, faturados e checkboxes serão sincronizados automaticamente. Toda a equipe usará o mesmo arquivo HTML.</p>
+    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/XXXXXXX/exec" />
+    <br>
+    <button class="cfg-btn" onclick="salvarConfig()">Conectar e salvar</button>
+    <span id="cfg-msg" style="font-size:11px;color:var(--text3);margin-left:10px"></span>
+  </div>
+
+  <!-- BARRA DE SYNC -->
+  <div class="sync-bar" id="sync-bar">
+    <div class="sync-dot off" id="sync-dot"></div>
+    <span id="sync-msg">Não conectado ao Google Sheets — configure acima para salvar o progresso</span>
+    <button onclick="forcarSync()" style="margin-left:auto;font-size:11px;padding:4px 14px;border-radius:6px;border:1px solid var(--border);background:var(--surface);cursor:pointer;color:var(--text2);font-weight:500;transition:all .2s" id="sync-btn" disabled
+  onmouseover="this.style.background='var(--blue)';this.style.color='#fff';this.style.borderColor='var(--blue)'"
+  onmouseout="this.style.background='var(--surface)';this.style.color='var(--text2)';this.style.borderColor='var(--border)'">
+  ↻ Sincronizar com planilha
+</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-l">Total corretivas</div><div class="kpi-v" id="kT">341</div><div class="kpi-s">base real · a programar</div></div>
+    <div class="kpi c-prog"><div class="kpi-l">Programadas</div><div class="kpi-v" id="kProg">0</div><div class="kpi-s" id="kProg-pct">0% do total</div></div>
+    <div class="kpi c-exec"><div class="kpi-l">Executadas</div><div class="kpi-v" id="kExec">0</div><div class="kpi-s" id="kExec-pct">0% do total</div></div>
+    <div class="kpi c-fat"><div class="kpi-l">Faturadas</div><div class="kpi-v" id="kF">0</div><div class="kpi-s" id="kF-pct">0% do total</div></div>
+    <div class="kpi c-pend"><div class="kpi-l">Pendentes</div><div class="kpi-v" id="kP">341</div><div class="kpi-s">sem ação ainda</div></div>
+    <div class="kpi"><div class="kpi-l">Valor total</div><div class="kpi-v" id="kV" style="font-size:16px">—</div><div class="kpi-s">estimado</div></div>
+    <!-- KPI VALOR FATURADO — expansível por mês -->
+    <div class="kpi-fat-wrap" id="kpi-fat-wrap">
+      <div class="kpi-fat-top" onclick="toggleFatBreakdown()">
+        <div class="kpi-fat-main">
+          <div class="kpi-l">Valor faturado</div>
+          <div class="kpi-v" id="kVF" style="color:var(--green)">—</div>
+          <div class="kpi-s" id="kVF-pct">planilha + marcados</div>
+        </div>
+        <div class="kpi-fat-toggle" id="fat-toggle-btn">▼ por mês</div>
+      </div>
+      <div class="kpi-fat-meses" id="fat-meses-body"></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="prog-wrap">
+    <div class="prog-hdr">
+      <span class="prog-title">Progresso — <span style="color:var(--blue)">■ Prog.</span> · <span style="color:#D97706">■ Exec.</span> · <span style="color:var(--green)">■ Fat.</span></span>
+      <span class="prog-count" id="prog-count">0 fat. · 0 exec. · 0 prog. / 0</span>
+    </div>
+    <div class="prog-bar" style="position:relative;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:.75rem">
+      <div id="prog-fill-prog" style="position:absolute;left:0;top:0;height:100%;width:0%;background:#BFDBFE;border-radius:4px;transition:width .4s"></div>
+      <div id="prog-fill-exec" style="position:absolute;left:0;top:0;height:100%;width:0%;background:#FDE68A;border-radius:4px;transition:width .4s"></div>
+      <div id="prog-fill-fat"  style="position:absolute;left:0;top:0;height:100%;width:0%;background:var(--green);border-radius:4px;transition:width .4s"></div>
+    </div>
+    <div class="prog-clients" id="prog-clients"></div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <input class="srch" id="srch" placeholder="Buscar unidade, OS, proposta, supervisor, técnico..." oninput="render()">
+    <select class="sel" id="fSup" onchange="render()"><option value="">Todos os supervisores</option><option value="André José">André José</option><option value="Bruno Lima">Bruno Lima</option><option value="Edwilder Costa">Edwilder Costa</option><option value="Elton Douglas">Elton Douglas</option><option value="Fabio Amorim">Fabio Amorim</option><option value="Fernando Melgarejo">Fernando Melgarejo</option><option value="Flavio Bezerra">Flavio Bezerra</option><option value="Franckllyn Moreira">Franckllyn Moreira</option><option value="Igor Lajusticia">Igor Lajusticia</option><option value="Jefferson Guedes">Jefferson Guedes</option><option value="Marcelo Vergne">Marcelo Vergne</option><option value="Ronie Banderia">Ronie Banderia</option><option value="Whasington Alleby">Whasington Alleby</option></select>
+    <select class="sel" id="fTec" onchange="render()"><option value="">Todos os técnicos</option><option value="37520">37520</option><option value="38624">38624</option><option value="38946">38946</option><option value="38988">38988</option><option value="Euripedes Gimenes">Euripedes Gimenes</option><option value="Jales Lino">Jales Lino</option><option value="Rafael Avelino">Rafael Avelino</option><option value="Ricardo Pereira">Ricardo Pereira</option></select>
+    <select class="sel" id="fCli" onchange="render()"><option value="">Todos os clientes</option><option value="ASSAI">ASSAI</option><option value="ATAKAREJO">ATAKAREJO</option><option value="ATENTO">ATENTO</option><option value="AUTOZONE">AUTOZONE</option><option value="BANCO MERCANTIL">BANCO MERCANTIL</option><option value="BASF">BASF</option><option value="BOTICARIO">BOTICARIO</option><option value="BRADESCO">BRADESCO</option><option value="BRADESCO AGENCIAS">BRADESCO AGENCIAS</option><option value="CARREFOUR">CARREFOUR</option><option value="DIA%">DIA%</option><option value="FUNDAÇÃO">FUNDAÇÃO</option><option value="GBARBOSA">GBARBOSA</option><option value="GIGA">GIGA</option><option value="GM">GM</option><option value="GREEN4T">GREEN4T</option><option value="LEROY">LEROY</option><option value="MERCANTIL">MERCANTIL</option><option value="OBRAMAX">OBRAMAX</option><option value="PORTO SEGURO">PORTO SEGURO</option><option value="SAMS">SAMS</option><option value="SMARTIFT">SMARTIFT</option><option value="SUMERBOL">SUMERBOL</option><option value="TENDA">TENDA</option><option value="ZAMP-BK">ZAMP-BK</option></select>
+    <select class="sel" id="fUF" onchange="render()"><option value="">Todos os estados</option><option value="AL">AL</option><option value="BA">BA</option><option value="CE">CE</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MG">MG</option><option value="MS">MS</option><option value="MT">MT</option><option value="PA">PA</option><option value="PB">PB</option><option value="PE">PE</option><option value="PI">PI</option><option value="PR">PR</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="SC">SC</option><option value="SE">SE</option><option value="SP">SP</option></select>
+    <select class="sel" id="fFat" onchange="render()">
+      <option value="">Todas</option>
+      <option value="pend">Sem ação</option>
+      <option value="prog">Programadas</option>
+      <option value="exec">Executadas</option>
+      <option value="fat">Faturadas</option>
+      <option value="both">Prog. + Faturadas</option>
+    </select>
+    <button class="btn" onclick="toggleAll(true)">+ Expandir</button>
+    <button class="btn" onclick="toggleAll(false)">− Recolher</button>
+    <button class="btn red" id="btn-clear-fat" onclick="clearFaturadas()" style="display:none">Limpar faturadas</button>
+    <button class="btn" id="btn-clear-exec" onclick="clearExecutadas()" style="display:none;border-color:#D97706;color:#D97706">Limpar executadas</button>
+    <button class="btn" id="btn-clear-prog" onclick="clearProgramadas()" style="display:none;border-color:var(--blue);color:var(--blue)">Limpar programadas</button>
+    <div class="filter-info" id="filter-info"></div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend" id="legend"></div>
+
+
+  <!-- SEÇÃO FATURADOS -->
+  <div class="fat-section" id="fat-section">
+    <div class="fat-section-hdr" onclick="toggleFatSection()">
+      <span style="font-size:18px">✓</span>
+      <span class="fat-section-title">Faturados</span>
+      <span class="fat-section-count" id="fat-count-lbl">carregando...</span>
+      <span class="chev" id="fat-chev">▼</span>
+    </div>
+    <div id="fat-body" style="display:none">
+      <div class="fat-toolbar">
+        <input class="fat-srch" id="fat-srch" placeholder="🔍 Buscar OS, proposta, unidade, descrição..." oninput="renderFaturados()">
+        <select class="fat-sel" id="fat-fil-cli" onchange="renderFaturados()"><option value="">Todos os clientes</option></select>
+        <select class="fat-sel" id="fat-fil-st"  onchange="renderFaturados()">
+          <option value="">Todos os status</option>
+          <option value="FATURADO">Faturado</option>
+          <option value="EXEC">Executado (ag. fat.)</option>
+        </select>
+        <span class="fat-total-bar" id="fat-total-bar">—</span>
+      </div>
+      <div id="fat-grupos"></div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div id="sched"></div>
+</div>
+
+<script>
+let DATA = [];       // carregado do Sheets
+
+let FATURADOS = [{"os":"17024","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36743-26","cliente":"GREEN4T","unidade":"GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":3389.9,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17025","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36744-26","cliente":"GREEN4T","unidade":"GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":5172.66,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17026","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36745-26","cliente":"GREEN4T","unidade":"GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":3850.77,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17027","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36746-26","cliente":"GREEN4T","unidade":"GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":3205.1,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17028","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36747-26","cliente":"GREEN4T","unidade":"GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":3389.9,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17029","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36748-26","cliente":"GREEN4T","unidade":"GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":5700.97,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17030","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36749-26","cliente":"GREEN4T","unidade":"GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":2904.44,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17031","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36750-26","cliente":"GREEN4T","unidade":"GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":3389.9,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17032","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36751-26","cliente":"GREEN4T","unidade":"GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":2904.44,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17033","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36752-26","cliente":"GREEN4T","unidade":"GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":3389.9,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17056","status":"EXECUTADO - AG. LIB. FATURAMENTO","classif":"FATURADO","mes":"abril-26","proposta":"C36962-26","cliente":"ZAMP-BK","unidade":"BURGUER KING 16116 AV ACM SALVADOR","uf":"BA","desc":"Camara - troca do pressostato da unidade","valor":1281.82,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17070","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C36868-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - VDF BLUMENAU - V004 - SC","uf":"SC","desc":"Sala de TI - Instalação de tomadas","valor":1830.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17071","status":"EXECUTADO - AG. LIB. FATURAMENTO","classif":"FATURADO","mes":"abril-26","proposta":"C33180-25 RVC","cliente":"FUNDAÇÃO","unidade":"Bradesco NCD - Prédio Amarelo","uf":"SP","desc":"Chiller 01 - Tamponamento de Trocador de Calor","valor":144504.59,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"17073","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C35014-25","cliente":"DIA%","unidade":"Dia% - Loja 3476 (0547) – Hortolândia Mall - SP","uf":"SP","desc":"FREEZER COM TEMPERATURA ELEVADA","valor":694.47,"supervisor":"","tecnico":"","osc":"","tipo":"OSD","fat_data":"","limite":30},{"os":"17074","status":"FATURADO","classif":"FATURADO","mes":"abril-26","proposta":"C35015-25","cliente":"DIA%","unidade":"Dia% Loja 590 - Jesuíno Marcondes Machado - SP","uf":"SP","desc":"VITRINE COM TEMPERATURA ELEVADA","valor":795.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSD","fat_data":"","limite":30},{"os":"17085","status":"EXECUTADO - AG. LIB. FATURAMENTO","classif":"FATURADO","mes":"abril-26","proposta":"C37356-26","cliente":"BRADESCO AGENCIAS","unidade":"Bradesco Ribeirão Preto - SP","uf":"SP","desc":"Infraestrutura adequação elétrica","valor":56000.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30}];  // dados de 08/04/2026
+
+let REGISTROS = [{"os":"16309","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36577-26","cliente":"ZAMP-BK","unidade":"BKN 25668 - BURGER KING - FS OURINHOS - AV LUIZ SALDANHA RODRIGUES","uf":"SP","desc":"Troca de capacitor","valor":26.69,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16750","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36584-26","cliente":"ZAMP-BK","unidade":"BKB - FS - 31306 - FS JOAO PESSOA - AV HILTON SOUTO MAIOR 1147","uf":"SP","desc":"Splitão Hitachi - Fornecimento e Substituição de rolamento","valor":337.64,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16800","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36647-26","cliente":"ZAMP-BK","unidade":"BKN 26574 - BURGER KING - IANDE SHOP CAUCAIA","uf":"CE","desc":"Mini freezer - troca de compressor","valor":4972.63,"supervisor":"Jefferson Guedes","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16864","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36781-26","cliente":"ZAMP-BK","unidade":"BKNB 23724 - BURGER KING - SHOP PARQUE DA CIDADE","uf":"SP","desc":"Frozen - Fornecimento e Substituição de kit de rele de partida","valor":576.45,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16948","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36780-26","cliente":"ZAMP-BK","unidade":"BKN 17620 - BURGER KING - SHOP TAMBORE","uf":"SP","desc":"Manutenção camara fria","valor":2973.07,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16979","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37150-26","cliente":"ZAMP-BK","unidade":"BKN 24765 Portal Shopping Goiânia","uf":"GO","desc":"Câmara de congelados - Correção de vazamento","valor":6347.17,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17034","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37242-26","cliente":"ZAMP-BK","unidade":"BKN 24594 - BURGER KING - ILR CAMPINAS - RUA 13 DE MAIO","uf":"SP","desc":"Câmara congelados - troca de mangueira do dreno e dos hidraulicos","valor":1153.58,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17054","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37002-26","cliente":"ZAMP-BK","unidade":"BKN 26849 - BURGER KING - FS SBC - AV MARIA SERVIDEI DEMARCHI 1308","uf":"SP","desc":"Camara de Resfriados - Susbtituição de Valvula","valor":1553.48,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16661","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36004-26","cliente":"SMARTIFT","unidade":"SMART FIT BACLOB1 - ATAKAREJO LOBATO 1 - BA","uf":"BA","desc":"Split Tipo Cassete 04  - Correção de Vazamento, Fornecimento de Carga de Nitrogênio 10m³","valor":823.5,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16981","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36907-26","cliente":"SMARTIFT","unidade":"SMART-FIT - ATAKAREJO LOBATO 1 - BACLOB1 - BA","uf":"BA","desc":"Desinstalação e Instalação de Ar-Condicionado Tipo Piso-Teto – Salão de Treino Cardio","valor":1830.0,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16404","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C35955-25","cliente":"BOTICARIO","unidade":"O BOTICÁRIO L800 - FLAG BOT PINHEIROS - SP NOVASFERA R&B","uf":"SP","desc":"Desmontagem da campanha - Fornecimento de andaimes e mão de obra para desmontagem","valor":2662.02,"supervisor":"Whasington Kalleby","tecnico":"Baruc","osc":"R$  698,00","tipo":"OSB","fat_data":"","limite":15},{"os":"16741","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36346-26","cliente":"BOTICARIO","unidade":"V080 - VD RS - VDF PORTO ALEGRE","uf":"RS","desc":"\"Telhado - Area Vendas - Correção de Infiltração na área de vendas perto da linha Match e corredor de acesso ao estacionamento\n\"","valor":3080.87,"supervisor":"Fernando Melgarejo","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16850","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36607-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - BOT RS PRACA ALFANDEGA - L960 - RS","uf":"RS","desc":"Lâmpada do espelho queimada. Necessária substituição do drive ou do LED, após análise técnica","valor":742.23,"supervisor":"Fernando Melgarejo","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16936","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36753-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - CALÇADÃO LONDRINA - L892 - PR","uf":"PR","desc":"Retirada do tanque existente, instalação de tanque novo com adequação das conexões hidráulicas e finalização com pintura das paredes e do piso da área.","valor":2587.04,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17072","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37101-26","cliente":"BOTICARIO","unidade":"O BOTICARIO GUARAPARI  LA43 - ES","uf":"ES","desc":"Pintura de Porta de Aço","valor":3294.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16412","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C34480-25RVA","cliente":"GBARBOSA","unidade":"GBARBOSA - LOJA 320 - HIPER FONTES - SE","uf":"SE","desc":"Material para Instalação de 02 Compressores - Salão de Vendas","valor":862.23,"supervisor":"Jefferson Guedes","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16426","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C33795-25 RVA","cliente":"GREEN4T","unidade":"GREEN4T São Cristovão - RJ","uf":"RJ","desc":"Chiller Trane 150 TR - Fornecimento e Substituição de Placas","valor":6854.5,"supervisor":"Flavio Bezerra","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16440","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C35957-25 RVA","cliente":"PORTO SEGURO","unidade":"Porto Seguro Sucursal - MS","uf":"MS","desc":"Fornecimento de Dobradiça Blindex para Porta de Vidro","valor":540.0,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":10},{"os":"16867","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36789-26","cliente":"PORTO SEGURO","unidade":"PORTO SEGURO CAMPO GRANDE - MS","uf":"MS","desc":"Troca de filtros","valor":270.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":10},{"os":"16450","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36047-26","cliente":"GM","unidade":"General Motors Brasil - SP","uf":"SP","desc":"CT8 (CAG – Carrier 30HR 220 D601) - Chiller 1,2,3,4 e 5","valor":93500.0,"supervisor":"Ronie Banderia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16460","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36381-26","cliente":"ATENTO","unidade":"ATENTO - ATENTO RJ - SITE MADUREIRA - AR COND - RJ","uf":"RJ","desc":"Chiller Hitachi - Fornecimento e Substituição de Placa Eletronica","valor":9137.67,"supervisor":"Flavio Bezerra","tecnico":"","osc":"R$  -","tipo":"OSC","fat_data":"","limite":30},{"os":"16466","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36074-26","cliente":"CARREFOUR","unidade":"CARREFOUR CAMPO GRANDE  - ECG - MT","uf":"MT","desc":"Chiller -Higienização da Torre de Água Gelada - Manutenção Preventiva","valor":988.2,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16499","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36101-26","cliente":"LEROY","unidade":"Leroy Merlin Contagem - MG","uf":"MG","desc":"Aditivo piso de vendas","valor":8180.61,"supervisor":"Edwilder Costa","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16998","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36976-26","cliente":"LEROY","unidade":"LEROYY MERLIN GOIANIA - GO","uf":"GO","desc":"Fornecimento de material e mão de obra para instalação do compressor da máquina 03 que atende salão de vendas, iremos fornecer os insumos e o cliente irá fornecer o compressor.","valor":0.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16530","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36151-26","cliente":"TENDA","unidade":"Tenda Bertioga - SP","uf":"SP","desc":"Fornecimento de Material para Instalação","valor":446.58,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16562","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36199-26","cliente":"AUTOZONE","unidade":"AUTOZONE - ATIBAIA - 7642 - SP","uf":"SP","desc":"Locação de Andaime para Atendimento de Chamado - Piso Teto Salão de Vendas","valor":658.8,"supervisor":"Igor Lajusticia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16565","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36211-26","cliente":"FUNDAÇÃO","unidade":"Fundação Bradesco Marília -  SP","uf":"SP","desc":"fornecimento e Substituição de Placa do Evaporador Equipamento da Sala 14  - Ensino Fundamental","valor":796.05,"supervisor":"Rodrigo Silva","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16763","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36513-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CEILANDIA - - DF","uf":"DF","desc":"Sala SOPE - Substituição de Placa Receptora Evaporador","valor":1334.08,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16906","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36524-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ  -  - TO","uf":"TO","desc":"Industria Rural - Correção de Vazamento","valor":6297.18,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"17003","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C37127-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - OSASCO UNIDADE I - - SP","uf":"SP","desc":"(Sala estudo bloco A) - LG 3600 BTUS Piso Teto Fornecimento e Substituição Bandeija da Evaporadora","valor":760.67,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16623","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36393-26","cliente":"ATAKAREJO","unidade":"Atakarejo Via Regional Loja A-25 - BA","uf":"BA","desc":"Substituição da contatora do compressor e do fusível da fase T do compressor","valor":4257.49,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16648","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36270-26","cliente":"SAMS","unidade":"SAMS - SÃO JOSE DO RIO PRETO - JRS - SP","uf":"SP","desc":"Subtituição de Compressor e religação - Salão de Vendas 04 e 11","valor":3779.23,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16706","status":"AG. ENTREGA MANENG","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36486-26","cliente":"OBRAMAX","unidade":"OBRAMAX SUZANO - SP","uf":"SP","desc":"Split K7 - Café - Fornecimento de Placa Receptora","valor":905.85,"supervisor":"Ronie Banderia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":25},{"os":"16713","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36559-26","cliente":"MERCANTIL","unidade":"MERCANTIL - SANT MARTIN - 816 - BA","uf":"BA","desc":"Fornecimento de Desincrustante Biodegradavel 5L","valor":279.99,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16760","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C35833-25","cliente":"ASSAI","unidade":"ASSAI GOIANIA PERIMETRAL - 140 - GO","uf":"GO","desc":"Fornecimento de Material para Substituição dos Rlamentos dos Fancoil que Atende Salão de Vendas","valor":3919.9,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16828","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36312-26","cliente":"BANCO MERCANTIL","unidade":"BANCO MERCANTIL - PA RIO VERDE - GO","uf":"GO","desc":"Melhoria do sistema de drenagem das calhas do telhado, atualmente insuficiente para o volume de água, eliminando assim os pontos de infiltração identificados no interior da agência","valor":2546.97,"supervisor":"Whasington Kalleby","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16852","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36762-26","cliente":"DIA%","unidade":"Dia% Loja 1003 Indaiatuba - Candelaria - SP","uf":"SP","desc":"Substituição de micro motores","valor":0.0,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSD","fat_data":"","limite":30},{"os":"16976","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36908-26","cliente":"BRADESCO","unidade":"FUNDAÇÃO BRADESCO - CACOAL  -  - RO","uf":"RO","desc":"Remanejamento de 02 (dois) Ar condicionado EM","valor":4055.33,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":15},{"os":"16985","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C37132-26","cliente":"BASF","unidade":"BASF - MORUMBI - SP","uf":"SP","desc":"Fornecimento de materiais e mão de obra para troca de compressor","valor":6500.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17021","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37167-26","cliente":"GIGA","unidade":"GIGA COTIA/ RAPOSO - 905 - SP","uf":"","desc":"Troca e Instalação de Split ar condicionado 30000BTU's","valor":5164.92,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17064","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37249-26","cliente":"BRADESCO AGENCIAS","unidade":"Bradesco Agência (3832) Barão - URB JUIZ DE FO - MG","uf":"MG","desc":"Splitão Saguão - Fornecimento e Substituição de Compressor","valor":5759.79,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16641","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36374-26","cliente":"ZAMP-BK","unidade":"BURGER KING - FS - LONDRINA AV SAUL ELKIND,3149","uf":"PR","desc":"Laje de Serviço - Correção de Vazamento","valor":4298.7,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16753","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36609-26","cliente":"ZAMP-BK","unidade":"24764-  DRIVE SÃO PAULO - AV JUSCELINO KUBISTCHEK, 1514","uf":"SP","desc":"Substituição de contator tripolar 25 amperes e bobina solenoide 220v","valor":1543.54,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16824","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36622-26","cliente":"ZAMP-BK","unidade":"BKN 18316 - BURGER KING - SHOP BOA VISTA SP","uf":"SP","desc":"Rebobinamento de Motor WEG","valor":3294.0,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16882","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36692-26","cliente":"ZAMP-BK","unidade":"BKN 15885 - BURGER KING - SHOP ELDORADO","uf":"SP","desc":"Câmara de congelados - troca resistencia do dreno","valor":198.94,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16949","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36913-26","cliente":"ZAMP-BK","unidade":"BKN 18817 - BURGER KING - CARREFOUR GIOVANNI GRONCHI SP","uf":"SP","desc":"Loja - geladeira de resfriado","valor":2437.11,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16986","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37166-26","cliente":"ZAMP-BK","unidade":"BKN 31306 Drive João Pessoa","uf":"PB","desc":"Ar condicionado - manutenção e carga de gas","valor":6266.85,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17035","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37222-26","cliente":"ZAMP-BK","unidade":"BKN 20046- Iguatemi São José do Rio preto","uf":"SP","desc":"Ar-condicionado - higienização","valor":2503.75,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17055","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37000-26","cliente":"ZAMP-BK","unidade":"BKN 21898 - BURGER KING - FS GOIANIA - AV 85 3202","uf":"GO","desc":"Fancoil - carga de gas","valor":2714.58,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16564","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36207-26","cliente":"SMARTIFT","unidade":"SMART-FIT - BARRIS 1 (SHOPPING CENTER PIEDADE) - BACBRI1 - BA","uf":"BA","desc":"Splitão 01 - Fornecimento de Tubo de Cobre para Adequação no Compressor Novo","valor":1185.84,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16983","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36904-26","cliente":"SMARTIFT","unidade":"SMART-FIT - BONFIM - BACBON1 - BA","uf":"BA","desc":"Fornecimento de Nitrogênio e PPU","valor":1630.53,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16407","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C35587-25","cliente":"BOTICARIO","unidade":"O BOTICÁRIO L947 - BOT RS IPIRANGA - RS","uf":"RS","desc":"Porta loja - Conserto com Gesso - Chamado M82050","valor":1874.83,"supervisor":"Fernando Melgarejo","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16744","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36343-26","cliente":"BOTICARIO","unidade":"V080 - VD RS - VDF PORTO ALEGRE","uf":"RS","desc":"WC PNE Feminino - Fornecimento e Substituição de Caixa Acoplada","valor":2721.49,"supervisor":"Fernando Melgarejo","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16860","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36440-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - MOEMA - L797 - SP CHAMADO M83002","uf":"SP","desc":"Forro - Estoque - Reparo no forro do Estoque da Loja","valor":3887.66,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16937","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36776-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - SHOPPING VITÓRIA - L391 - ES","uf":"ES","desc":"Troca de Fonte Chaveada e Fitas de LED 12V (Mão de Obra + Material)","valor":1189.5,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17077","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37118-26","cliente":"BOTICARIO","unidade":"O BOTICARIO GUARAPARI LA43 - ES","uf":"ES","desc":"SUBSTITUICÃO DE BOMBA DE DRENAGEM EQUIPAMENTO K7 CARRIER 18.000 BTU´S","valor":1839.15,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16754","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C35884-25","cliente":"GBARBOSA","unidade":"GBARBOSA - LOJA 125 - SANTO ANTÔNIO - BA2","uf":"BA","desc":"Sala de descanso - Fornecimento e Instalação de Compressor","valor":2470.5,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16498","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36115-26","cliente":"GREEN4T","unidade":"Green4T (Tim) CE","uf":"CE","desc":"Fornecimento Emergencial de Carga  de Fluído R407","valor":1811.7,"supervisor":"Jefferson Guedes","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16631","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36403-26","cliente":"PORTO SEGURO","unidade":"Porto Seguro Três Lagoas - MS","uf":"MS","desc":"Recarga ou substituição dos extintores","valor":614.25,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":10},{"os":"16888","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36713-26 RVB","cliente":"PORTO SEGURO","unidade":"Porto Seguro - Três Lagoas - MS","uf":"MS","desc":"Fornecimento de ar-condicionado e instalação.","valor":6501.57,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":10},{"os":"16451","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36048-25","cliente":"GM","unidade":"General Motors Brasil - SP","uf":"SP","desc":"CT20 (Trane RTAC 185 EN4YANC00) - Chiller 1 e 2","valor":43200.0,"supervisor":"Ronie Banderia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16646","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36300-26","cliente":"CARREFOUR","unidade":"CARREFOUR - CARREFOUR SOROCABA - SON - SP - INTERIOR","uf":"SP","desc":"Salão de Vendas - Substituição de termostatos e readequação do comando elétrico.","valor":1704.65,"supervisor":"Igor Lajusticia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16616","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C35971-25","cliente":"LEROY","unidade":"LEROY MERLIN CONTAGEM - MG","uf":"MG","desc":"Emergencial - Substituição da Bomba de Dreno e Sensor de Temperatura","valor":559.98,"supervisor":"Edwilder Costa","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"17046","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C36969-26","cliente":"LEROY","unidade":"LEROY MERLIN - ATUBA - L0009 - PR","uf":"PR","desc":"INSTALAÇÃO DE BOMBA DE DRENO DO AR-CONDICIONADO SFTV SPLIT WALL 22.000 BTUS","valor":1186.61,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16553","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36186-26","cliente":"TENDA","unidade":"TENDA BOTUCATU - CT35 - SP","uf":"SP","desc":"Fornecimento de Material para Uso na Manutenção Preventiva da Loja","valor":1103.49,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16755","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C35700-25 RVA","cliente":"AUTOZONE","unidade":"AUTOZONE - JACAREI - LOJA - 7605 - SP","uf":"SP","desc":"Equipamento 06 - Fornecimento de Materiais para Corretiva nos Equipamentos","valor":4544.23,"supervisor":"Igor Lajusticia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16571","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C34535-25RVA","cliente":"FUNDAÇÃO","unidade":"Fundação Bradesco Macapá - AP","uf":"AP","desc":"Sala 06 - Substituição do Motoventilador do Evaporador","valor":1079.09,"supervisor":"Rodrigo Silva","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16774","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36515-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ  -  - TO","uf":"TO","desc":"Unidade de Sáude Corredor de Espera, Laboratorio de Ciencias, Sala 14 Colegio 2, Morada das Flores - Substituição de Capacitor","valor":244.01,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16912","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36364-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - MACAPÁ - - AP","uf":"AP","desc":"Central 02 - Sala 1º Ano - Substituição de Capacitor","valor":166.76,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16876","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36764-26","cliente":"ATAKAREJO","unidade":"ATAKAREJO PERIPERI- BA","uf":"BA","desc":"Fornecimento de mão de obra para desobustrução das serpentinas do fancoil e reinstalação da mesma.","valor":59268.78,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16698","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36311-26","cliente":"SAMS","unidade":"SAMS - BAURU - BAS - SP","uf":"SP","desc":"Salão de Vendas e Refeitório - Correção de Vazamento e Pressurização com Nitrogênio","valor":3661.08,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16830","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36697-26","cliente":"OBRAMAX","unidade":"Obramax Cariacica - ES","uf":"ES","desc":"Sala da tesouraria quebra do piso para desobstrução de dreno","valor":1811.7,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":25},{"os":"16832","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36699-26","cliente":"BANCO MERCANTIL","unidade":"BANCO MERCANTIL - PAE MOSSORO -  - RN","uf":"RN","desc":"Correção de Vazamento e Nova Carga de Fluído Refrigerante","valor":3768.31,"supervisor":"Elton Douglas","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17023","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37241-26","cliente":"GIGA","unidade":"GIGA COTIA/ RAPOSO - 905 - SP","uf":"SP","desc":"Troca e Instalação de Split ar condicionado 30000BTU's","valor":6271.99,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16645","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36411-26","cliente":"ZAMP-BK","unidade":"BK N 19171 - Shop poços De caldas ZP 125368","uf":"SP","desc":"manutenção camara de congelados","valor":3027.38,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16765","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36589-26","cliente":"ZAMP-BK","unidade":"BKN 21533 - BURGER KING - FS ARARAQUARA - AV FRANCISCO SALLES 470","uf":"SP","desc":"Unidade Condensadora - Substituição de Controlador e Correção de Vazamento","valor":2582.06,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16825","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36624-26","cliente":"ZAMP-BK","unidade":"BKN 31063 - BURGER KING - FS - SP AV ENG ARMANDO DE ARRUDA PEREIRA 1577","uf":"SP","desc":"Ventilador Hitachi - Fornecimento e Substituição de Conexões de Cobre","valor":1337.36,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16883","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36842-26","cliente":"ZAMP-BK","unidade":"BKN 26574 - BURGER KING - IANDE SHOP CAUCAIA","uf":"CE","desc":"Laje técnica - correção de vazamento","valor":934.05,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16950","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36966-26","cliente":"ZAMP-BK","unidade":"BKN 20407 - BURGER KING - SHOP ASSIS PLAZA","uf":"SP","desc":"Câmara de congelados - troca de disjuntor","valor":132.58,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16987","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37137-26","cliente":"ZAMP-BK","unidade":"BKN 15512 SHOP BARRA","uf":"BA","desc":"Camara de congelados - troca motoventilador","valor":1317.6,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17036","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37214-26","cliente":"ZAMP-BK","unidade":"BKN 25453 BK LAURO DE FREITAS","uf":"BA","desc":"Freezer - correção de vazamento","valor":1053.46,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17057","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C36880-26","cliente":"ZAMP-BK","unidade":"BKN 26434 - BURGER KING - FS SP - AV REBOUCAS 2210","uf":"SP","desc":"Freezer do broiler - limpeza e carga de gaS","valor":1383.59,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16605","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36260-26","cliente":"SMARTIFT","unidade":"SMART-FIT - LAURO DE FREITAS 1 - BAILFT1 - BA","uf":"BA","desc":"Duto da Casa de Maquinas - Execução de serviço de isolamento térmico em MPU, mediante aplicação de fita de alumínio apropriada, compreendendo fornecimento do material, preparo da superfície, aplicação correta para vedação térmica e acabamento, conforme normas e recomendações técnicas","valor":164.7,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16409","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C35661-25","cliente":"BOTICARIO","unidade":"O BOTICÁRIO L942 - BOT PRAIAS BELAS - RS","uf":"RS","desc":"Porta da loja - Pintura e reparo - Chamado APP10001765","valor":546.6,"supervisor":"Fernando Melgarejo","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16746","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36314-26 RVA","cliente":"BOTICARIO","unidade":"V062 - MULTI M - VD MARINGÁ - PR - 21395","uf":"PR","desc":"Manutenção em Infra de Ar Condicionado","valor":4944.81,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16865","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36167-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - ARACRUZ CENTRO - LB20 - ES","uf":"ES","desc":"Serviço de Correção de Cobertura, Reparo em Forro PVC e Reparo em Tubulação Hidrossanitária","valor":5856.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16984","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C37088-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - BOT RS DR. FLORES -RS","uf":"RS","desc":"Desmontagem e Montagem de 2 Prateleiras","valor":1070.33,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17078","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37301-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - CAMBURI - LB01 - ES","uf":"ES","desc":"Atendimento de Chamado - Emergencial - Porta Fora do Trilho","valor":6258.6,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16622","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36389-26","cliente":"GREEN4T","unidade":"TIM - GREEN4T (TIM FORTALEZA)- ARCON -CE","uf":"CE","desc":"","valor":741.15,"supervisor":"Jefferson Guedes","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16644","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36433-26","cliente":"PORTO SEGURO","unidade":"Porto Seguro Campo Grande - MS","uf":"MS","desc":"Fornecimento de lâmpadas tubo de led para uso em manutenção preventiva","valor":360.14,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":10},{"os":"16452","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36049-26","cliente":"GM","unidade":"General Motors Brasil - SP","uf":"SP","desc":"CT1 (Carrier 30 GSP 080 446 S) - Chiler 1 e 2.","valor":63500.0,"supervisor":"Ronie Banderia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16647","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C35765-25","cliente":"CARREFOUR","unidade":"CARREFOUR S.BERNARDO VERGUEIRO - SBC - SP","uf":"SP","desc":"Fornecimento de material para Preventiva","valor":1553.4,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16629","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36400-26","cliente":"LEROY","unidade":"LEROY MERLIN - RIBEIRÃO PRETO - L0002 - SP","uf":"SP","desc":"Execução de substituição do rolamento do exaustor dos sanitários, bem como diagnóstico e reparo da placa eletrônica principal do sistema de ar-condicionado tipo split, incluindo retirada e posterior reinstalação do equipamento.","valor":1235.25,"supervisor":"Ronie Banderia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"17061","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C36865-26","cliente":"LEROY","unidade":"LEROY MERLIN - CURITIBA ATUBA - L0035 - PR","uf":"PR","desc":"Fornecimento e substituição do motor ventilador da evaporadora do equipamento de ar-condicionado tipo piso teto da marca Fujitsu","valor":1721.28,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16554","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36204-26","cliente":"TENDA","unidade":"TENDA UBATUBA - CT57 - SP","uf":"SP","desc":"Fornecimento de Material para Uso na Manutenção Preventiva da Loja","valor":790.56,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16756","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36480-26","cliente":"AUTOZONE","unidade":"AUTOZONE - SOROCABA ITAVUVU - 7657 - SP","uf":"SP","desc":"Equipamento 06 - Salão de Vendas - Correção de Vazamento","valor":4277.22,"supervisor":"Igor Lajusticia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16572","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36210-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - MARÍLIA - - SP","uf":"SP","desc":"Split da Sala de Informática  Ensino Médio -  Correção de Vazamento","valor":1152.86,"supervisor":"Rodrigo Silva","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16780","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C35879-25","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - OSASCO UNIDADE I - - SP","uf":"SP","desc":"Substituição de Valvula de Expansão - Ensino médio sala dos professores","valor":1021.14,"supervisor":"Rodrigo Silva","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16919","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36432-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - MACAPÁ - - AP","uf":"AP","desc":"Central 4 - Sala 11 EF - Substituição de Cabo de Alimentação","valor":1544.5,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16401","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C35989-25","cliente":"ATAKAREJO","unidade":"ATAKAREJO CAMAÇARI - Loja A-13 - BA","uf":"BA","desc":"Fornecimento de e Substituição Contator  CWB32 32A 220V","valor":741.15,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16847","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36724-26","cliente":"SAMS","unidade":"SAMS - RIBEIRAO PRETO SAVOY - RBS - SP","uf":"SP","desc":"Rooftop Salão de Vendas - Correção de Vazamento","valor":3186.96,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16934","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36950-26","cliente":"OBRAMAX","unidade":"OBRAMAX MOOCA - SP","uf":"SP","desc":"Preventiva- fornecimento de filtro manta","valor":955.26,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":25},{"os":"16927","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36920-26","cliente":"BANCO MERCANTIL","unidade":"BANCO MERCANTIL - PAE MOSSORO - - RN","uf":"RN","desc":"Fornecimento e Substituição de Caixa d'água","valor":3450.77,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16650","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36428-26","cliente":"ZAMP-BK","unidade":"BKN 18816 - BURGER KING - SHOP VIC SANTA BARBARA","uf":"SP","desc":"Camara de Resfriados - Substituição de Componentes","valor":7425.69,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16766","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36586-26","cliente":"ZAMP-BK","unidade":"BKN 21588 - BURGER KING - SHOP JARAGUA ARARAQUARA","uf":"SP","desc":"Câmara de Congelados - Correção de Vazamento","valor":1859.35,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16829","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36693-26","cliente":"ZAMP-BK","unidade":"BKN 30085 - BURGER KING - FS INDAIATUBA - AV ENG FABIO ROBERTO BARNABE","uf":"SP","desc":"Telhado/câmara de resfriado","valor":1906.17,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16890","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36785-26","cliente":"ZAMP-BK","unidade":"BKN 19146 - BURGER KING - CONTINENTAL SHOP SP","uf":"SP","desc":"Cozinha - Meet freezer","valor":144.38,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16952","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36841-26","cliente":"ZAMP-BK","unidade":"BKN 26842 - BURGER KING - FS PAULINIA - AV HEITOR NASCIMENTO 1460","uf":"SP","desc":"Câmara de Congelados - Manutenção Corretiva","valor":5178.42,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16989","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36635-26RVA","cliente":"ZAMP-BK","unidade":"BKN 18517 - BURGER KING - ROAD SHOP","uf":"SP","desc":"Ar Condicionado - Splitão Hitachi - Substituição de compressor","valor":9992.43,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17037","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37175-26","cliente":"ZAMP-BK","unidade":"BKN 19028 - BURGER KING - SHOP PARQUE DAS BANDEIRAS","uf":"SP","desc":"Freezer - troca do micro ventilador","valor":346.15,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17058","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C36796-26","cliente":"ZAMP-BK","unidade":"BKN 25433 - BURGER KING - FS ITU - AV OCTAVIANO PEREIRA MENDES 363","uf":"SP","desc":"Ar Condicionado - Fornecimento e Substituição de Controlador","valor":1669.83,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16718","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36435-26","cliente":"SMARTIFT","unidade":"SMART-FIT - SANTO ANDRE 2 - SPISTA2 - SP","uf":"SP","desc":"Conclusão de Instalação de Equipamento Piso Teto e Adequação de Drenos\r\nSerá realizado o término da instalação de 01 (um) equipamento de ar-condicionado tipo Piso Teto, contemplando ajustes finais, fixações, interligações necessárias e testes de funcionamento.\r\nTambém será efetuada a correção do dreno de 03 (três) equipamentos, com adequação e melhoria do layout da tubulação, visando melhor escoamento da água, prevenção de vazamentos e organização da instalação.","valor":7479.29,"supervisor":"Whasington Kalleby","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16410","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C35662-25","cliente":"BOTICARIO","unidade":"O BOTICÁRIO L942 - BOT PRAIAS BELAS - RS","uf":"RS","desc":"Ar condicionado - Limpeza de duto - Chamado APP10001769","valor":2933.21,"supervisor":"Fernando Melgarejo","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16748","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36305-26","cliente":"BOTICARIO","unidade":"V062 - MULTI M - VD MARINGÁ - PR - 21395","uf":"PR","desc":"Sala dos Supervisores - Instalação de Tomada","valor":1516.34,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16885","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36550-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - MOEMA - L797 - SP","uf":"SP","desc":"Pintura de Fachada - CHAMADO M83005","valor":7991.63,"supervisor":"Whasington Kalleby","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17017","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36982-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - BOT RS DR. FLORES - L959 - RS","uf":"RS","desc":"Troca de Fechaduras Trava Lateral Porta de Enrolar da Loja","valor":982.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17079","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37302-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - SANTA LEOPOLDINA-BPB - L926 - ES","uf":"ES","desc":"Atendimento de Chamado - Emergencial  - PORTA DE ENROLAR","valor":5435.1,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16798","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36320-26 RVB","cliente":"PORTO SEGURO","unidade":"Porto Seguro Três Lagoas - MS","uf":"MS","desc":"Fornecimento de ar-condicionado e instalação","valor":6949.74,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":10},{"os":"16585","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36047-26 RVC","cliente":"GM","unidade":"General Motors Brasil - SP","uf":"SP","desc":"CT8 (CAG – Carrier 30HR 220 D601) - Chiller 3","valor":15143.4,"supervisor":"Ronie Banderia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16649","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36203-26","cliente":"CARREFOUR","unidade":"CARREFOUR JUNDIAÍ - JDI - SP – INTERIOR","uf":"SP","desc":"Correção equipamento - Refeitorio, Caixinha","valor":11112.57,"supervisor":"Igor Lajusticia","tecnico":"","osc":"","tipo":"OSC","fat_data":"13/02/26","limite":20},{"os":"16639","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36288-26","cliente":"LEROY","unidade":"LEROY MERLIN - VITÓRIA - L0057 - ES","uf":"ES","desc":"plit sala do RH - Fornecimento e Substituição da Placa","valor":1253.55,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"17082","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C36938-26","cliente":"LEROY","unidade":"LEROY MERLIN TAMBORÉ - L0046 -SP","uf":"SP","desc":"REPARO NA PLACA DO CONDENSADOR","valor":1976.4,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16588","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36232-26","cliente":"TENDA","unidade":"TENDA - TENDA BOTUCATU - CT35 - SP","uf":"SP","desc":"Fornecimento de peça e Instalação","valor":1317.6,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16757","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36458-26","cliente":"AUTOZONE","unidade":"AUTOZONE - SJC - NELSON D'AVILA - 7668 - SP","uf":"SP","desc":"Equipamento 05 - Salão de Vendas - Correção de Vazamento","valor":4277.22,"supervisor":"Igor Lajusticia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16601","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C35208-25","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - APARECIDA DE GOIANIA - GO","uf":"GO","desc":"Fornecimento e troca do contator da condensadora - sala 08 EF máquina 02","valor":263.52,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16781","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36517-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ  -  - TO","uf":"TO","desc":"Maquina 02 - Sala 04 Colegio 2 - Correção de Vazamento e Substituição de Capacitor","valor":2425.33,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16920","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36446-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - MACAPÁ - - AP","uf":"AP","desc":"Central 03 - Sala 08 - Substituição de Rolamentos","valor":98.82,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16877","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36765-26","cliente":"ATAKAREJO","unidade":"ATAKAREJO  SÃO CAETANO - BA","uf":"BA","desc":"Fornecimento de mão de obra para desobustrução das serpentinas do fancoil e reinstalação da mesma.","valor":101561.12,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16873","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36206-26","cliente":"SAMS","unidade":"SAMS - WASHINGTON SOARES - SCWS - CE","uf":"CE","desc":"SPT07 - Salão de Vendas - Fornecimento e instalação de rolamento, incluindo material, mão de obra especializada, desmontagem, montagem, alinhamento e testes de funcionamento","valor":1083.17,"supervisor":"Jefferson Guedes","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16974","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36974-26","cliente":"OBRAMAX","unidade":"OBRAMAX SUZANO- SP","uf":"SP","desc":"Fornecimento de Materiais para Manutenção Preventiva","valor":971.73,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":25},{"os":"16651","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36409-26","cliente":"ZAMP-BK","unidade":"BKN 18816 - BURGER KING - SHOP VIC SANTA BARBARA","uf":"SP","desc":"Camara de Resfriados - Correção de Vazamento","valor":2821.34,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16767","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36576-26","cliente":"ZAMP-BK","unidade":"BKN 22912 - BURGER KING - FS ITATIBA - AV CASTELO BRANCO 687","uf":"SP","desc":"Troca de placas da condensadora","valor":12517.2,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16835","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36695-26","cliente":"ZAMP-BK","unidade":"BKN 19421 - BURGER KING - NORTH SHOP BARRETOS","uf":"SP","desc":"CAMARA DE RESFRIADOS COM ACUMULO DE GELO","valor":2305.8,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16892","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36761-26","cliente":"ZAMP-BK","unidade":"BKN 19146 - BURGER KING - CONTINENTAL SHOP SP","uf":"SP","desc":"Cozinha - freezers especiais","valor":2998.06,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16953","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36816-26","cliente":"ZAMP-BK","unidade":"BKN 19609 - BURGER KING - MAUA PLAZA SHOP","uf":"SP","desc":"Câmara de congelados - troca resistencia do dreno","valor":551.24,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16994","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37159-26","cliente":"ZAMP-BK","unidade":"BKN 19654 - BURGUER KING CARREFOUR ANCHIETA","uf":"SP","desc":"Camara de Resfriados - Substituição de Hidraulicos e Gaxetas","valor":1005.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17038","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37149-26","cliente":"ZAMP-BK","unidade":"BKN 28208 - BURGER KING - FS GRU - ROD PRES DUTRA","uf":"SP","desc":"Camara de Resfriados - Recarga de Gás e Substituição de Cortina PVC","valor":1803.27,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17059","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37264-26","cliente":"ZAMP-BK","unidade":"BKN 19028 - BURGER KING - SHOP PARQUE DAS BANDEIRAS","uf":"SP","desc":"Camara de resfriados - Substituição de motor Axial","valor":4044.42,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16801","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36662-26","cliente":"SMARTIFT","unidade":"SMART FIT SBRTOCPDS04 - TEOTÔNIO SEGURADO SUL (PRÓPRIA) - TO","uf":"TO","desc":"Fornecimento de material para reparo no sistema de drenagem","valor":1149.61,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16534","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36082-26","cliente":"BOTICARIO","unidade":"O BOTICÁRIO L974 - BOT BENTO FERREIRA - ES","uf":"ES","desc":"Retirada e Instalação de Adesivos de Vitrine, Troca de Placa homologada;  Pintura de Estrutura da Vitrine Interna e Externa - Chamado M82905.","valor":4209.0,"supervisor":"Bruno Lima","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16769","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36581-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - SHOPPING ARACRUZ - LA90 - ES","uf":"ES","desc":"Atendimento de Chamado Emergencial - APP10002886","valor":17293.5,"supervisor":"Bruno Lima","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16886","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36353-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - SANTA LEOPOLDINA-BPB - L926 - ES","uf":"ES","desc":"Desinstalação do equipamento de ar-condicionado tipo Split Piso-Teto com capacidade de 36.000 BTUs.Fornecimento e instalação de 01 (um) Split Piso-Teto, com as seguintes características:","valor":18994.16,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17018","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C37047-26RVA","cliente":"BOTICARIO","unidade":"O BOTICARIO - BOT RS ASSIS - L943 - RS","uf":"RS","desc":"Lâmpada Estoque  - Substituição","valor":486.95,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17088","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37346-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - FLAG BOT PINHEIRO - L800 - SP (Sem Chamado)","uf":"SP","desc":"Fornecimento e Montagem de Andaimes","valor":5068.63,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16866","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36786-26","cliente":"PORTO SEGURO","unidade":"PORTO SEGURO CAMPO GRANDE - MS","uf":"MS","desc":"Serviço de Dedetização","valor":513.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":10},{"os":"16586","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36047-26 RVD","cliente":"GM","unidade":"General Motors Brasil - SP","uf":"SP","desc":"CT8 (CAG – Carrier 30HR 220 D601) - Chiller 2","valor":16158.6,"supervisor":"Ronie Banderia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16715","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36530-26","cliente":"CARREFOUR","unidade":"CARREFOUR SÃO VICENTE - SAV - SP - BAIXADA","uf":"SP","desc":"Chiller 02 - Fornecimento de Peça e Instalação","valor":823.5,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16772","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36536-26","cliente":"LEROY","unidade":"LEROY MERLIN - MACEIO - L0050 - AL","uf":"AL","desc":"CPD e CFTV - Instalação de Dois Equipamentos Split","valor":1705.5,"supervisor":"Jefferson Guedes","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16700","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36503-26","cliente":"TENDA","unidade":"TENDA PRAIA GRANDE II - CT58 - SP","uf":"SP","desc":"Fornecimento de Material para Uso na Manutenção Preventiva da Loja","valor":1679.94,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16758","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36383-26","cliente":"AUTOZONE","unidade":"AUTOZONE - ITAQUA ALBERTO HINOTO - 9435 - SP","uf":"SP","desc":"Salão de Vendas Maquina 01 e 05 - Fornecimento de Insumos para Correção de Vazamento","valor":14002.7,"supervisor":"Igor Lajusticia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16603","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C33713-25","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - APARECIDA DE GOIANIA - GO","uf":"GO","desc":"Sala 01 E.F TAG 004 - Evaporadora - Fornecimento e Substituição de Placa Eletrônica","valor":1064.0,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16783","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36518-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ  -  - TO","uf":"TO","desc":"Maquina 02 - Sala 05 Colegio 2 - Correção de Vazamento e Substituição de Capacitor","valor":2425.33,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16928","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36444-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CEILANDIA - - DF","uf":"DF","desc":"Equipamento 01 e 02 - Sala 14 EF - Substituição de Turbina e Motor Ventilador","valor":2605.89,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16879","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36767-26","cliente":"ATAKAREJO","unidade":"ATAKAREJO  SAN MARTIN - BA","uf":"BA","desc":"Fornecimento de mão de obra para desobustrução das serpentinas do fancoil e reinstalação da mesma.","valor":50215.36,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16895","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36736-26","cliente":"SAMS","unidade":"SAMS - RIBEIRAO PRETO SAVOY - RBS - SP","uf":"SP","desc":"Rooftop Salão de Vendas - Fornecimento e Substituição de Correias","valor":1235.25,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16975","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36975-26","cliente":"OBRAMAX","unidade":"OBRAMAX UBERLANDIA - MG","uf":"SP","desc":"Fornecimento de Materiais para Manutenção Preventiva","valor":1218.78,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":25},{"os":"16652","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36302-26","cliente":"ZAMP-BK","unidade":"Burguer King 18816 shopping vic Center SOB","uf":"SP","desc":"Camara fria - fornecimento e substituição de trava de porta","valor":1531.71,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16770","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36617-26","cliente":"ZAMP-BK","unidade":"BKN 22706 - BURGER KING - FS SUMARE - AV REBOUCAS 3017","uf":"SP","desc":"Câmara de congelados - Fornecimento e Substituição de Moto ventilador","valor":721.91,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16836","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36706-26","cliente":"ZAMP-BK","unidade":"BKN 19527 - BURGER KING - ITAPECERICA SHOP","uf":"SP","desc":"Ar Condicionado - Splitão - Substituição de Compressor","valor":7917.81,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16898","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36862-26","cliente":"ZAMP-BK","unidade":"BNK 19629- FS SP - AV RIO DAS PEDRAS 1320","uf":"SP","desc":"Ar Condicionado - Fornecimento e Substituição de Correia","valor":164.7,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16957","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C37015-26","cliente":"ZAMP-BK","unidade":"BKN 24139 - FS UBERLANDIA - AV RONDON PACHECO 3623","uf":"MG","desc":"Câmara de Congelados - Correção de Vazamento","valor":4979.11,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16995","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37152-26","cliente":"ZAMP-BK","unidade":"BKB - FS - 31063 - FS - SP AV ENG ARMANDO DE ARRUDA PEREIRA 1577 - SP","uf":"SP","desc":"Camara de Resfriados - Substituição de Hidraulicos e Gaxetas","valor":1820.06,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17039","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37148-26","cliente":"ZAMP-BK","unidade":"BKN 28208 - BURGER KING - FS GRU - ROD PRES DUTRA","uf":"SP","desc":"Camara de Congelados - Substituição de Resistencia","valor":4231.75,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17060","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C36840-26","cliente":"ZAMP-BK","unidade":"BKN 20899 - BURGER KING - SHOP DA BAHIA","uf":"BA","desc":"Quadro eletrico - troca de disjuntor","valor":406.01,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16849","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36396-26","cliente":"SMARTIFT","unidade":"SMART-FIT - LAURO DE FREITAS 1 - BAILFT1 - BA","uf":"BA","desc":"Sala Gerênicia  - Fornecimento e confecção de bandeja externa de drenagem para ar-condicionado","valor":1647.0,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16535","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36087-26","cliente":"BOTICARIO","unidade":"O BOTICÁRIO L924 - BPB AURORA - ES","uf":"ES","desc":"Tratamento e pintura Estrutura de Vitrine e Rodapé - Chamado M82466.","valor":2671.8,"supervisor":"Bruno Lima","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16788","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36442-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - CARREFOUR LIMÃO - L383 - SP","uf":"SP","desc":"Manutenção de Pintura da Porta CHAMADO M82655","valor":1679.27,"supervisor":"Whasington Kalleby","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16887","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36285-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - LOJA MORUMBI - L012 - SP","uf":"SP","desc":"Bebedouro de Água - Fornecimento e  Instalação de Tomada","valor":719.25,"supervisor":"Whasington Kalleby","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17019","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C37046-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - BOT RS CARREFOUR - L961 - RS","uf":"RS","desc":"Fita Antiderrapante de Escada - Substituição de Fita de Demarcação de piso","valor":1434.46,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16587","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"janeiro-26","proposta":"C36047-26 RVE","cliente":"GM","unidade":"General Motors Brasil - SP","uf":"SP","desc":"CT8 (CAG – Carrier 30HR 220 D601) - Chiller 1","valor":10659.6,"supervisor":"Ronie Banderia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16872","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36680-26","cliente":"CARREFOUR","unidade":"CARREFOUR S.BERNARDO PAULICEIA - SBP - SP - ABC","uf":"SP","desc":"Correção de Vazamento e Troca de Compresssor","valor":8959.78,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16891","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36772-26","cliente":"LEROY","unidade":"LEROY MERLIN - FORTALEZA - L0038 - CE","uf":"CE","desc":"PT de 30.000 btus/h - Instalação de 04 (quatro) equipamentos de ar-condicionado de 30.000 BTUs, sendo: 02 unidades instaladas no setor de Logística;  02 unidades instaladas na Subestação.","valor":6569.54,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16701","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36504-26","cliente":"TENDA","unidade":"Tenda Atacado - Itu - SP","uf":"SP","desc":"Fornecimento de Material para Uso na Manutenção Preventiva da Loja","valor":1630.53,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16787","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36620-26","cliente":"AUTOZONE","unidade":"AUTOZONE - LIMEIRA - LOJA 7681","uf":"SP","desc":"fornecimento e substituição de contatora","valor":148.23,"supervisor":"Igor Lajusticia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16604","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C35453-25RVB","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - APARECIDA DE GOIANIA - GO","uf":"GO","desc":"Fornecimento de material e peças para troca do compressor , capacitor , placa , trafo da maquina 01 do laboratório de informática","valor":494.1,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16784","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36519-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ  -  - TO","uf":"TO","desc":"Maquina 02 - Sala 06 Colegio 2 - Correção de Vazamento e Substituição de Capacitor","valor":2425.33,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16941","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36521-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ  -  - TO","uf":"TO","desc":"Maquina 02 - Sala 09 Colegio 2 - Correção de Vazamento e Substituição de Capacitor","valor":2425.33,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16875","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36730-26","cliente":"ATAKAREJO","unidade":"ATAKAREJO  REGIONAL BAHIA - BA","uf":"BA","desc":"Fornecimento de mão de obra para desobustrução das serpentinas do fancoil e reinstalação da mesma.","valor":59268.78,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16901","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C35645-25","cliente":"SAMS","unidade":"Sam´s  Maceió -  AL","uf":"SP","desc":"Substituição de Filtro Secador - SPT03","valor":457.79,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17084","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37329-26RVA","cliente":"OBRAMAX","unidade":"OBRAMAX - MOOCA","uf":"SP","desc":"","valor":3458.7,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":25},{"os":"16682","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36410-26","cliente":"ZAMP-BK","unidade":"BK N 26842 - FS Paulinia Av Heitor Nascimento","uf":"SP","desc":"Manutenção freezer ( Frango)","valor":307.44,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16775","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36627-26","cliente":"ZAMP-BK","unidade":"BKN 21782 - BURGER KING - SHOP DA ILHA","uf":"MA","desc":"Fornecimento e Instalação Micro Motor e Resistência da Unidade Evaporadora","valor":2186.66,"supervisor":"Jefferson Guedes","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16837","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36707-26","cliente":"ZAMP-BK","unidade":"BKN 21827 - BURGER KING - SHOP PÁTIO NORTE","uf":"MA","desc":"Ar condicionado - FANCOIL - Correção de Vazamento de Água Gelada","valor":4026.0,"supervisor":"Jefferson Guedes","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16899","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36691-26","cliente":"ZAMP-BK","unidade":"BKN 22525 - BURGER KING - SHOP SP MARKET II","uf":"SP","desc":"Troca da correia","valor":131.76,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16958","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36819-26RVA","cliente":"ZAMP-BK","unidade":"BKN 19523 - BURGER KING - FS SP - VIC ROBERT KENNEDY","uf":"SP","desc":"Ar Condicionado - Fornecimento e Substituição de Motor e Contatora","valor":6990.69,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16996","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37157-26","cliente":"ZAMP-BK","unidade":"BKN 19860 - BURGUER KING EXTRA BOSQUE MAI","uf":"SP","desc":"Camara de Resfriados - Substituição de Rodo","valor":107.06,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17040","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37147-26","cliente":"ZAMP-BK","unidade":"BKN 31302 - BURGER KING - FS SP GUARULHOS RODOVIA PRES DUTRA KM 21,5","uf":"SP","desc":"Camara de Resfriados - Recarga de Gás e Substituição de Cortina PVC","valor":1852.68,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17063","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37153-26","cliente":"ZAMP-BK","unidade":"BKN 26433 - BK - FS SANTO ANDRE - AV PRESTES MAIA","uf":"SP","desc":"Câmara, porta resfriado e porta de congelado","valor":701.74,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16851","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36421-26","cliente":"SMARTIFT","unidade":"SMART-FIT - LAURO DE FREITAS 1 - BAILFT1 - BA","uf":"BA","desc":"Fornecimento de Caga de Nitrogênio e PPU","valor":1564.65,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16598","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36271-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - WALMART OSASCO - L365 - SP","uf":"SP","desc":"Porta de Enrolar - FORNECIMENTO DE UMA CHAVE PARA PORTA DE ENROLAR - Chamado M83184","valor":1349.93,"supervisor":"Whasington Kalleby","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16789","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36308-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - PLAZA SHOPPING CARAPICUÍBA - L414","uf":"SP","desc":"Teto - Area de Vendas - Será realizada a Pintura do Teto","valor":1920.34,"supervisor":"Whasington Kalleby","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16913","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36778-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - AV SAO PAULO, 1099 - L897 - PR","uf":"PR","desc":"Aplicação de massa corrida e pintura na parede da fachada da loja, localizada na área de vendas ao lado do caixa.","valor":2348.21,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17020","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C37085-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - BOT RS S. TOTAL - L948 - RS","uf":"RS","desc":"Fios e Cabos - Organização de Fiação Exposta Próximo a Vitrine","valor":964.85,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16731","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36406-26","cliente":"GM","unidade":"General Motors Brasil - SP","uf":"SP","desc":"","valor":3000.0,"supervisor":"Ronie Banderia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16997","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36989-26","cliente":"CARREFOUR","unidade":"SAMS - SALVADOR - SVS - BA","uf":"","desc":"SPTO 08 ( Circuito B) Fornecimento de Carga de Nitrogênio, PPU e Filtro Secador","valor":2124.63,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16904","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36702-26","cliente":"LEROY","unidade":"LEROY MERLIN - NATAL PARNAMIRIM - L0049 - RN","uf":"RN","desc":"Fornecimento de Substituição de Correias","valor":1153.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16702","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36505-26","cliente":"TENDA","unidade":"TENDA LEME - CT62 - SP","uf":"SP","desc":"Fornecimento de Material para Uso na Manutenção Preventiva da Loja","valor":1712.88,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16848","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36492-26","cliente":"AUTOZONE","unidade":"AUTOZONE - VALINHOS - 7652 - SP","uf":"SP","desc":"Equipamento 01, 05 e 07 - Substituição de Contatora","valor":1087.02,"supervisor":"Igor Lajusticia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16654","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36382-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - MACAPÁ - - AP","uf":"AP","desc":"Central 01 - Sala 01 EM - Substituição de MotoVentilador e Capacitor","valor":1349.44,"supervisor":"Rodrigo Silva","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16785","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36520-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ  -  - TO","uf":"TO","desc":"Maquina 02 - Sala 08 Colegio 2 - Correção de Vazamento e Substituição de Capacitor","valor":2425.33,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16942","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36525-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ - - TO","uf":"TO","desc":"Area Climatizada de Queijos - Correção de Vazamento e Substituição de Motor Ventilador","valor":6297.18,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16881","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36769-26","cliente":"ATAKAREJO","unidade":"ATAKAREJO  PARALELA - BA","uf":"BA","desc":"Fornecimento de mão de obra para desobustrução das serpentinas do fancoil e reinstalação da mesma.","valor":72105.22,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16902","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C34180-25","cliente":"SAMS","unidade":"SAM'S CLUB JATIUCA - AL","uf":"AL","desc":"SPT05 - Fornecimento e Instalação de Contator de Portência.","valor":2319.53,"supervisor":"Jefferson Guedes","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16683","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36443-26","cliente":"ZAMP-BK","unidade":"BKN 26842 - BURGER KING - FS PAULINIA - AV HEITOR NASCIMENTO 1460","uf":"SP","desc":"Manutenção Splitão","valor":553.9,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16777","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36623-26","cliente":"ZAMP-BK","unidade":"BKN 18316 - BURGER KING - SHOP BOA VISTA SP","uf":"SP","desc":"Motor elétrico trifásico Weg 5 cv 4 polos 220/380 volts","valor":9700.83,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16838","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36715-26","cliente":"ZAMP-BK","unidade":"BKN 28020 - BURGER KING - SHOP BANDEIRANTES MOGI GUACU","uf":"SP","desc":"Camara de congelados - carga de gas","valor":840.0,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16900","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36803-26","cliente":"ZAMP-BK","unidade":"BKN 15639 - BURGER KING - MORUMBI SHOP","uf":"SP","desc":"Câmara de Resfriados - Recarga de Gás","valor":461.16,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16961","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37024-26","cliente":"ZAMP-BK","unidade":"BK 21792 - RIO ANIL SHOP","uf":"MA","desc":"CAMARA DE RESFRIADOS E CONGELADOS - troca da contatora","valor":1051.19,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16999","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37221-26","cliente":"ZAMP-BK","unidade":"BKN 31391 FS NATAL AV BACHAREL THOMAS 3042","uf":"RN","desc":"Ar-condicionado - carga de gas e correção de vazamento","valor":4237.99,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17041","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37145-26","cliente":"ZAMP-BK","unidade":"BKN 20624 - BURGER KING - SHOP MOOCA","uf":"SP","desc":"Camara de Resfriados - Manutenção preventiva","valor":4596.32,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17065","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37255-26","cliente":"ZAMP-BK","unidade":"BKN 19521 - BURGER KING - ILS SHOP INTERLAGOS II","uf":"SP","desc":"Camara resfriado - troca de micro ventiladores","valor":860.66,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16924","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36906-26","cliente":"SMARTIFT","unidade":"SMART-FIT - SUSSUARANA 1 - BACSUS1 - BA","uf":"BA","desc":"SPTO 03 - Fornecimento e Substituição de Disjuntor","valor":197.64,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16739","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36347-26","cliente":"BOTICARIO","unidade":"V080 - VD RS - VDF PORTO ALEGRE","uf":"RS","desc":"Goteira no estoque","valor":3500.35,"supervisor":"Fernando Melgarejo","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16799","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36424-26 RVA","cliente":"BOTICARIO","unidade":"O BOTICARIO - VDF - LONDRINA - V056 - PR","uf":"PR","desc":"Execução De Serviço Para Instalação De Toldo Na Recepção Do ER","valor":4534.04,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16918","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36257-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - FLAG BOT PINHEIRO - L800 - SP","uf":"SP","desc":"Estoque - CORRIGIR GESSO E REFAZER PINTURA DO FORRO NO ESTOQUE","valor":2222.86,"supervisor":"Whasington Kalleby","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"17042","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37071-26","cliente":"BOTICARIO","unidade":"O BOTICARIO - BOT RS ASSIS - L943 - RS","uf":"RS","desc":"Instalação de Lampada Escada","valor":1732.57,"supervisor":"","tecnico":"","osc":"","tipo":"OSB","fat_data":"","limite":15},{"os":"16732","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36401-26","cliente":"GM","unidade":"General Motors Brasil - SP","uf":"SP","desc":"","valor":4500.0,"supervisor":"Ronie Banderia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"17008","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C35604-25 RVA","cliente":"CARREFOUR","unidade":"CARREFOUR SULACAP - RJ","uf":"RJ","desc":"Praça de Alimentação - Equipamento 01 - Correção de Vazamentos e Nova Carga de Fluído","valor":8409.38,"supervisor":"Flavio Bezerra","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16910","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36317-26","cliente":"LEROY","unidade":"LEROY MERLIN - NATAL PARNAMIRIM - L0049 - RN","uf":"RN","desc":"Salão de vendas - Roof Top 01 - (A e B) - Correção de vazamento","valor":7538.1,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16703","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36507-26","cliente":"TENDA","unidade":"TENDA BOTUCATU - CT35 - SP","uf":"SP","desc":"Fornecimento de Material para Uso na Manutenção Preventiva da Loja","valor":1712.88,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16659","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36365-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - MACAPÁ - - AP","uf":"AP","desc":"Central 02 - Sala 1º Ano EF - Fornecimento e Substituição de Bomba de Dreno","valor":1729.35,"supervisor":"Rodrigo Silva","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16841","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36721-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CEILANDIA - - DF","uf":"DF","desc":"Fornecimento de Motor para Evaporada Ar Condicionado Split Lg Sala Sope","valor":1486.45,"supervisor":"Franckllyn Moreira","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16943","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36523-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ - - TO","uf":"TO","desc":"Maquina 01 e 02 - Cocção da Cozinha - Correção de Vazamento","valor":6297.18,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16878","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36766-26","cliente":"ATAKAREJO","unidade":"ATAKAREJO  CAMAÇARI - BA","uf":"BA","desc":"Fornecimento de mão de obra para desobustrução das serpentinas do fancoil e reinstalação da mesma.","valor":101561.12,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16960","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36481-26","cliente":"SAMS","unidade":"SAMS - BONOCO - BON - BA","uf":"BA","desc":"SPLITÃO O3, 06 08 -   Substituição dos termostatos das máquinas 03 e 08; \r\n  Correção de vazamentos dos splitões 06 e 08; \r\n  Instalação do compressor da máquina 03; \r\n  Instalação das placas do motor ventilador das condensadoras do splitão 08.","valor":16030.86,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16685","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36437-26","cliente":"ZAMP-BK","unidade":"BKN 30087 - BURGER KING - FS LIMEIRA DR LAURO CORREA SILVA 4643","uf":"SP","desc":"Splitão  - Fornecimento e Substituição de Correias","valor":171.3,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16778","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36553-26","cliente":"ZAMP-BK","unidade":"BKN 18870 - BURGER KING - FS RIB PRETO - AV PORTUGAL 810","uf":"SP","desc":"Fornceimento e Substituição de Contator","valor":790.56,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16839","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36667-26","cliente":"ZAMP-BK","unidade":"BKN 21830 - BURGER KING - FS SOROCABA - AFONSO VERGUEIRO 1460","uf":"SP","desc":"Manutenção ar condicionado","valor":2790.6,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16903","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36405-26","cliente":"ZAMP-BK","unidade":"BURGER KING - FS POA - AV DR NILO PECANHA 1715","uf":"PR","desc":"Manutenção em 2 equipamentos de ar-condicionado na loja","valor":5415.68,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16963","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C37049-26","cliente":"ZAMP-BK","unidade":"BKN 15374 - BURGER KING - FS SP - AV HELIO PELLEGRINO 1072","uf":"SP","desc":"Câmara de resfriado - troca de compressor","valor":8950.7,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17000","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37223-26","cliente":"ZAMP-BK","unidade":"BKN 24766 - BURGER KING - SHOP TOTAL POA","uf":"RS","desc":"Câmara de Resfriados - Substituição de Motoventilador","valor":686.99,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17043","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37146-26","cliente":"ZAMP-BK","unidade":"BKN 31302 - BURGER KING - FS SP GUARULHOS RODOVIA PRES DUTRA KM 21,5","uf":"SP","desc":"Câmara de Congelados - Substituição de Resistencia","valor":3979.03,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17066","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37240-26","cliente":"ZAMP-BK","unidade":"BKN 21801 - BURGER KING - CARREFOUR PENHA","uf":"SP","desc":"Câmara de congelados - manutenção no evaporador e carga de gas","valor":1848.61,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16932","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36905-26 RVA","cliente":"SMARTIFT","unidade":"SMART FIT -BACIMB2 - IMBUÍ 2- BA","uf":"BA","desc":"SPTO 06  e 05 -  Fornecimento de Carga de Nitrogênio e PPU","valor":3014.01,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16959","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36967-26","cliente":"LEROY","unidade":"LEROY MERLIN - BRASILIA NORTE - L0028 - DF","uf":"DF","desc":"fornecimento e instalação de duas bombas de dreno para os  equipamentos de ar condicionado do refeitório","valor":2470.5,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16907","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36866-26","cliente":"TENDA","unidade":"Tenda ITU - SP","uf":"SP","desc":"SPTO 04 - Fornecimento e Substituição de Rolamento e Mancal","valor":741.15,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16660","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36310-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - MACAPÁ - - AP","uf":"AP","desc":"EF Sala 1 - Equipamento 03 - Fornecimento e Substituição de Bomba de Dreno","valor":3458.7,"supervisor":"Rodrigo Silva","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16844","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C35701-25","cliente":"FUNDAÇÃO","unidade":"Fundação Bradesco Osasco 01 - SP","uf":"SP","desc":"Ensino Médio - Sala 16 - Equipamento 33 (Lado Janela)","valor":1729.35,"supervisor":"Rodrigo Silva","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16944","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36522-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ - - TO","uf":"TO","desc":"Maquina 01 e 02 - Padaria - Correção de Vazamento","valor":6297.18,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16880","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36768-26","cliente":"ATAKAREJO","unidade":"ATAKAREJO  ALAGOINHAS - BA","uf":"BA","desc":"Fornecimento de mão de obra para desobustrução das serpentinas do fancoil e reinstalação da mesma.","valor":93995.08,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17062","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37038-26","cliente":"SAMS","unidade":"SAMS - ARACAJU JARDINS - AJS - SE","uf":"SE","desc":"Splitão 11 circuito A e B Fornecimento de Carga de Nitrogênio, PPU e Filtro Secador","valor":5439.86,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":20},{"os":"16686","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36482-26","cliente":"ZAMP-BK","unidade":"BK - FS GRU - AV DR TIMOTEO PENTEADO 41 - SS872767","uf":"SP","desc":"Troca filtro câmara de resfriado","valor":349.31,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16779","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36595-26","cliente":"ZAMP-BK","unidade":"BKN 26827 - BURGER KING - FS CARAPICUIBA - AV INOCENCIO SERAFICO","uf":"SP","desc":"Câmara de Congelados - Substituição de Controlador","valor":3022.66,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16845","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36757-26","cliente":"ZAMP-BK","unidade":"BKN 16667 - BURGER KING - FS SOROCABA - AV COMITRE","uf":"SP","desc":"Ar-condicionado - manutenção dreno","valor":456.3,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16914","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36894-26","cliente":"ZAMP-BK","unidade":"BURGER KING - SHOP INTERLAR ARICANDUVA - SP","uf":"SP","desc":"Camara de congelados e de resfriado - manutenção nas portas e no dreno","valor":1852.65,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16964","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36600-26","cliente":"ZAMP-BK","unidade":"BKN 26434 - BURGER KING - FS SP - AV REBOUCAS 2210","uf":"SP","desc":"Ar Condicionado - Correção de Vazamento","valor":5331.66,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17001","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37196-26","cliente":"ZAMP-BK","unidade":"BKN 21844 - BURGER KING - SHOP CASTANHEIRAS","uf":"PA","desc":"Dispensador de batatas - troca do compressor","valor":2790.71,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17044","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37084-26","cliente":"ZAMP-BK","unidade":"BKN 28204 - BURGER KING - FS RIBEIRAO PRETO - AV DOM PEDRO I","uf":"SP","desc":"Freezer especiais - troca do compressor","valor":1679.95,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17067","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37199-26","cliente":"ZAMP-BK","unidade":"BKN 25453 BURGUER KING LAURO DE FREITAS","uf":"BA","desc":"Camara resfriado - troca do motoventilador","valor":1482.3,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16968","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36936-26","cliente":"SMARTIFT","unidade":"SMART-FIT - VILA VELHA 1 - ESCVVA1 - ES","uf":"ES","desc":"SPTO 03 - Fornecimento e Substituição de Filtro Secador","valor":6287.89,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16967","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C37064-26","cliente":"LEROY","unidade":"LEROY MERLIN - FORTALEZA - L0038 – CE","uf":"CE","desc":"Correção de vazamentos Rooftops 03, 04 e 06.","valor":2933.36,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":18},{"os":"16938","status":"AG. ENTREGA MANENG","classif":"PROGRAMAR","mes":"março-26","proposta":"C36922-26","cliente":"TENDA","unidade":"TENDA LEME - CT62 - SP","uf":"SP","desc":"Fornecimento de PLACA ELETRONICA CONTROLE","valor":1149.85,"supervisor":"Igor Lajusticia","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16697","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36379-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - REGISTRO - - SP","uf":"SP","desc":"Ensino Medio - Sala dos Professores, Sala de Estudos, Sala 01, 02 e 03 - Substituição de Equipamentos","valor":5172.3,"supervisor":"Rodrigo Silva","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16857","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36526-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - CANUANÃ - - TO","uf":"TO","desc":"Maquina 01 - Sala 13 Colegio 2 - Correção de Vazamento","valor":2937.16,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16982","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36814-26","cliente":"FUNDAÇÃO","unidade":"FUNDAÇÃO BRADESCO - REGISTRO - - SP","uf":"SP","desc":"Ensino Medio - Sala dos Professores, Sala de Estudos, Sala 01, 02 e 03 -  Fornecimento de Mão de Obra para Substituição de Equipamentos","valor":3388.28,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":17},{"os":"16602","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36313-26","cliente":"ATAKAREJO","unidade":"ATAKAEJO - CABULA - BA","uf":"BA","desc":"Fornecimento de Valvula Esfera 5/8 GBC","valor":411.75,"supervisor":"Marcelo Vergne","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16689","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36493-26","cliente":"ZAMP-BK","unidade":"BKB - FC - 19614 - ATRIUM SANTO ANDRE - SP","uf":"SP","desc":"Camara de Congelados - Substituição de Compressor","valor":3826.54,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16782","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36636-26","cliente":"ZAMP-BK","unidade":"BKN 17498 - BK - FS CAMPINAS - AV BRASIL 761","uf":"SP","desc":"Câmara de congelados - troca de resistencia do dreno","valor":256.59,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16846","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36626-26","cliente":"ZAMP-BK","unidade":"BK 15884 - SHOP MIDWAY MALL NATAL","uf":"RN","desc":"Freezer dos Especiais - Correção de Vazamento","valor":1374.18,"supervisor":"Elton Douglas","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16917","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36912-26","cliente":"ZAMP-BK","unidade":"BKN 24366 - BK - FS ARARAS - AV DONA RENATA 2858","uf":"SP","desc":"Camara de congelados - troca da caixa de comando","valor":280.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16965","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37066-26","cliente":"ZAMP-BK","unidade":"BKN 26836 - BURGER KING - FS BARRETOS - AV 43 300","uf":"SP","desc":"Camara de resfriados - carga de gas","valor":2501.89,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17002","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37176-26","cliente":"ZAMP-BK","unidade":"BKN 21844 - BURGER KING - SHOP CASTANHEIRAS","uf":"PA","desc":"Freezer - troca de compressor","valor":2494.24,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17045","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37075-26","cliente":"ZAMP-BK","unidade":"BKN 24361 - BURGER KING - FS CAMPINAS - NORTE SUL 1387","uf":"SP","desc":"Freezer de hambúrguer - troca do termostato","valor":115.29,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17068","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C36592-26","cliente":"ZAMP-BK","unidade":"BKN 19103 - BURGER KING - SHOP CENTER RIO CLARO","uf":"SP","desc":"Substituição de Mola e Recarga de Gás","valor":1581.12,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16980","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36856-26 RVA","cliente":"TENDA","unidade":"TENDA BERTIOGA - CT67 - SP","uf":"SP","desc":"Splitão 01 e 03 - Correção de Vazamento e Nova Carga de Fluído (Fornecimento do Cliente)","valor":3969.27,"supervisor":"Raul Rodrigues","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16691","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36510-26","cliente":"ZAMP-BK","unidade":"BKN 25454 - BURGER KING - FS GRU - AV DR TIMOTEO PENTEADO 41","uf":"SP","desc":"Câmara de Resfriados - Fornecimento e Substituição de Compressor","valor":5060.21,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16791","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36637-26","cliente":"ZAMP-BK","unidade":"BKN 19629 - BURGER KING - FS SP - AV RIO DAS PEDRAS 1320","uf":"SP","desc":"Câmara de congelados - troca de bobina solenoide","valor":512.33,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16854","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36760-26","cliente":"ZAMP-BK","unidade":"BKN 26436 - BURGER KING - FS SUZANO - R DR PRUDENTE DE MORAES 650","uf":"SP","desc":"Troca da bobina da valvula solenoide","valor":512.33,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16922","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36924-26","cliente":"ZAMP-BK","unidade":"BKN 19524 - BURGER KING - FS MOGI GUAÇU - AV MOGI MIRIM 256","uf":"SP","desc":"Câmara de congelados - Troca da bobina solenoide","valor":512.33,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16966","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37018-26","cliente":"ZAMP-BK","unidade":"BURGER KING - FS BARRETOS - AV 43 300","uf":"SP","desc":"Ar Condicionado - Correção de Vazamento","valor":1472.7,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17004","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37153-26","cliente":"ZAMP-BK","unidade":"BKN 19860 - BURGUER KING EXTRA BOSQUE MAIA","uf":"SP","desc":"Camara de Congelados - Substituição de Cortina e Resistencia","valor":2566.78,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17047","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C36797-26","cliente":"ZAMP-BK","unidade":"BKN 17975 - BURGER KING - MAXI SHOP JUNDIAI","uf":"SP","desc":"Freezer 1,2 e 3 - Recarga de gás","valor":1383.48,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17069","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C36575-26","cliente":"ZAMP-BK","unidade":"BKN 30470 - BK - FS SP - ESTRADA DE ITAPECERICA 1400","uf":"SP","desc":"Troca de micro motor do forçador camara fria","valor":288.76,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16704","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36561-26","cliente":"ZAMP-BK","unidade":"BKN 30074 - BURGER KING - FS RIBEIRAO PRETO AV CAPITAO SALOMAO 2360","uf":"SP","desc":"Ar Condicionado - Fornecimento e Substituição de Correias","valor":155.08,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16792","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36650-26","cliente":"ZAMP-BK","unidade":"BKN 24764 - FS - AV JUSCELINO KUBITSHEK 1514","uf":"SP","desc":"Manutenção ar-condicionado","valor":928.09,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16856","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36726-26","cliente":"ZAMP-BK","unidade":"BKN 24363 - BURGER KING - FS AMERICANA - AV N SRA DE FATIMA 231","uf":"SP","desc":"Ar-condicionado Splitão","valor":19138.14,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16923","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36926-26","cliente":"ZAMP-BK","unidade":"BKN 21533 - BURGER KING - FS ARARAQUARA - AV FRANCISCO SALLES 470","uf":"SP","desc":"Câmara congelado - troca bobina da valvula solenoide","valor":512.33,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16969","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37065-26","cliente":"ZAMP-BK","unidade":"BKN 18417 - BURGER KING - ILS SHOP CENTER PENHA SP","uf":"SP","desc":"Câmara fria - troca componentes eletricos","valor":1704.27,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17005","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37158-26","cliente":"ZAMP-BK","unidade":"BKB - FS - 31063 - FS - SP AV ENG ARMANDO DE ARRUDA PEREIRA 1577 - SP","uf":"SP","desc":"Camara de Congelados - Substituição de Hidraulicos e Gaxetas","valor":1820.06,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17048","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37059-26","cliente":"ZAMP-BK","unidade":"BKN 28019 - BK - SHOP ARAGUAIA VARZEA PAULISTA","uf":"SP","desc":"Câmara frias - Troca dos hidraulicos e das gaxetas","valor":1482.98,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17080","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37333-26","cliente":"ZAMP-BK","unidade":"BKN 21534 - BURGER KING - FS EMBU DAS ARTES - ELIAS YAZBEK 708","uf":"SP","desc":"Câmara de Resfriados - Substituição de cortinas e resistência","valor":1378.49,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16717","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36563-26","cliente":"ZAMP-BK","unidade":"BKN 31060 - BK - FS - LONDRINA AV SAUL ELKIND,3149","uf":"PR","desc":"Manutenção Splitão - troca de compressor","valor":22532.56,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16793","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36574-26","cliente":"ZAMP-BK","unidade":"BKN 18415 - BURGER KING - SHOP CAMPO LIMPO","uf":"SP","desc":"Manutenção dreno camara fria","valor":327.41,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16858","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36616-26","cliente":"ZAMP-BK","unidade":"BKN 18825 - BURGER KING - JUNDIAI SHOP","uf":"SP","desc":"Câmara de resfriado - troca de evaporador","valor":4185.96,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16926","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36923-26","cliente":"ZAMP-BK","unidade":"BURGUER KING AV ACM BKN 16116 FS SALVADOR","uf":"BA","desc":"Câmara de congelados - Correção de vazamento","valor":1198.83,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16970","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37080-26","cliente":"ZAMP-BK","unidade":"BKN 28016 - BURGER KING - SHOP BOULEVARD MOGI GUACU","uf":"SP","desc":"Camara congelados - troca de contatora","valor":535.01,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17006","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37224-26","cliente":"ZAMP-BK","unidade":"BKN 24744 - BURGER KING - FS SP - AV VICENTE RAO 1700","uf":"SP","desc":"Câmara de congelado -manutenção evaporador e carga de gas","valor":1292.8,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17049","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37062-26","cliente":"ZAMP-BK","unidade":"BKN 24316 BURGER KING KARIM PLAZA NORTE","uf":"DF","desc":"Câmara de resfriados - troca do hidraulico e gaxeta","valor":1052.14,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17081","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37334-26","cliente":"ZAMP-BK","unidade":"BKN 21534 - BURGER KING - FS EMBU DAS ARTES - ELIAS YAZBEK 708","uf":"SP","desc":"Meat Freezer - Substituição de compressor","valor":1558.12,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16730","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36491-26","cliente":"ZAMP-BK","unidade":"BKN 16939 - BURGER KING - CATUAI SHOP CENTER","uf":"PR","desc":"Manutenção Ar-condicionado","valor":1050.44,"supervisor":"Vagner de Brito","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16794","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36567-26","cliente":"ZAMP-BK","unidade":"BKN 21822 - MARILIA - AV TIRADENTES 1008","uf":"SP","desc":"Troca dobradiças camara congelados","valor":58.18,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16859","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36727-26","cliente":"ZAMP-BK","unidade":"BKN 26165 - BURGER KING - SHOP IGUATEMI ALPHAVILLE","uf":"SP","desc":"Câmara de resfriado - troca do hidraulico da porta (São rafael) e controlador.","valor":1490.41,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16930","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36779-26RVA","cliente":"ZAMP-BK","unidade":"BKN 17620 - BURGER KING - SHOP TAMBORE","uf":"SP","desc":"Freezer - Substituição de compressor","valor":3129.08,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16971","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36860-26","cliente":"ZAMP-BK","unidade":"BKN 19028 - BURGER KING - SHOP PARQUE DAS BANDEIRAS","uf":"SP","desc":"Camara fria - resistencia dreno","valor":500.68,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17007","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37151-26","cliente":"ZAMP-BK","unidade":"BKN 19654 - BURGUER KING CARREFOUR ANCHIETA","uf":"SP","desc":"Camara de Congelados/Resfriados - Substituição de Hidraulicos e Gaxetas","valor":1005.0,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17050","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37036-26","cliente":"ZAMP-BK","unidade":"BKN 19173 - BURGER KING - FS RIO CLARO - JARDIM CLARE","uf":"SP","desc":"Ar Condicionado - Recarga de Gás","valor":2881.9,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17083","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37330-26","cliente":"ZAMP-BK","unidade":"BKN 23184 - BURGER KING - SHOP BOULEVARD BELEM","uf":"SP","desc":"Freezer batata - troca de compressor","valor":1523.48,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16733","status":"PROGRAMADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36580-26","cliente":"ZAMP-BK","unidade":"BKN 21792 - RIO ANIL SHOP CENTER","uf":"MA","desc":"Troca de unidade condensadora","valor":25129.92,"supervisor":"Jefferson Guedes","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16795","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36618-26","cliente":"ZAMP-BK","unidade":"BKB - FC - 20996 - MAUA PLAZA SHOP II - SP","uf":"SP","desc":"Troca de compressor camara fria","valor":7065.67,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16861","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36729-26","cliente":"ZAMP-BK","unidade":"BKN 17673 - BURGER KING - SHOP TABOAO","uf":"SP","desc":"Camara congelados - manutenção no evaporador","valor":1231.83,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16931","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36928-26","cliente":"ZAMP-BK","unidade":"BKN 19609 - BURGER KING - MAUA PLAZA SHOP","uf":"SP","desc":"Câmara de congelados - manutenção forçador de ar","valor":3180.5,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16972","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37020-26","cliente":"ZAMP-BK","unidade":"BKN 25455 - BURGER KING - FS POA - AV DR NILO PECANHA 1715","uf":"RS","desc":"Ar Condicionado - Correção e Vazamento","valor":3208.14,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17008","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37077-26","cliente":"ZAMP-BK","unidade":"Burger King 24316 - Karim plaza Norte Brasília","uf":"DF","desc":"Ar condicionado - troca da placa filtro","valor":923.52,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17051","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37035-26","cliente":"ZAMP-BK","unidade":"BKN 28020 - BURGER KING - SHOP BANDEIRANTES MOGI GUACU","uf":"SP","desc":"Freezer de Carne - Substituição de Micro Motor","valor":144.38,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17087","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37363-26","cliente":"ZAMP-BK","unidade":"BKN 27468 - BURGER KING - FS SP - AV SALIM FARAH MALUF","uf":"SP","desc":"Ar condicionado - troca da placa e do rolamento","valor":2635.21,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16745","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36598-26","cliente":"ZAMP-BK","unidade":"BKN 20996 - BURGER KING - MAUA PLAZA SHOP II","uf":"SP","desc":"Substituição de Capacitores","valor":593.63,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16796","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36638-26","cliente":"ZAMP-BK","unidade":"BKN 26816 - BURGER KING - FS FERRAZ - AV BRASIL 1706","uf":"SP","desc":"Camara resfriado - troca dos micro ventiladores","valor":908.22,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16862","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36731-26","cliente":"ZAMP-BK","unidade":"BKN 19173 - BURGER KING - FS RIO CLARO - JARDIM CLARET","uf":"SP","desc":"Ar-condicionado - troca de rolamentos","valor":790.56,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16946","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36824-26","cliente":"ZAMP-BK","unidade":"BKN 18824 - BURGER KING - CARREFOUR OSASCO","uf":"SP","desc":"Parte interna da loja com vazamento  - isolação  para o dreno","valor":574.78,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16973","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37076-26","cliente":"ZAMP-BK","unidade":"BKN 26433 - BURGER KING - FS SANTO ANDRE - AV PRESTES MAIA","uf":"SP","desc":"Câmara de Resfriados - Substituição de Compressor","valor":9008.98,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17009","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37220-26","cliente":"ZAMP-BK","unidade":"BKN 21087 BK SHOP BELA VISTA CORREÇÃO DE VAZAMENTO EM FREEZER","uf":"BA","desc":"Freezer  - correção de vazamento","valor":748.26,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17052","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37028-26","cliente":"ZAMP-BK","unidade":"BKN 18740 - BURGER KING - PARK SHOP SAO CAETANO","uf":"SP","desc":"Camara de Congelados - Substituição de contator","valor":1841.68,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16749","status":"PENDENTE EXECUÇÃO","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36587-26","cliente":"ZAMP-BK","unidade":"BKN 16667 - BURGER KING - FS SOROCABA - AV COMITRE","uf":"SP","desc":"Substituição de Filtro e Recarga de Gás","valor":947.9,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16797","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"fevereiro-26","proposta":"C36649-26","cliente":"ZAMP-BK","unidade":"BKN 18825 - BURGER KING - JUNDIAI SHOP","uf":"SP","desc":"Loja - Camara de resfriado","valor":664.71,"supervisor":"Fabio Amorim","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16863","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"março-26","proposta":"C36742-26","cliente":"ZAMP-BK","unidade":"BKN 19626 - BURGER KING - FS FRANCA - AV ISMAEL ALONSO 2161","uf":"SP","desc":"Freezer carne - trocar capacitor/carga de gas","valor":393.48,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16947","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C36929-26","cliente":"ZAMP-BK","unidade":"BKN 20407 - Burguer King - shop Assis plaza","uf":"SP","desc":"Câmera congelados - troca valvula de serviço da unidade","valor":3533.17,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"16977","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37095-26RVA","cliente":"ZAMP-BK","unidade":"BKN 26811 - BURGER KING - FS SP - AV RAGUEB CHOHFI 2022","uf":"SP","desc":"Ar condicionado - troca da placa","valor":9998.73,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17022","status":"MATERIAL LIBERADO","classif":"PROGRAMAR","mes":"março-26","proposta":"C37054-26","cliente":"ZAMP-BK","unidade":"BKN 31305 - BURGER KING - FC BOITUVA - SHOP BROOKLYN ALAMEDAS","uf":"SP","desc":"Câmera de resfriados - Carga de gas","valor":2932.9,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30},{"os":"17053","status":"AG. SOLICITAÇÃO SUP.","classif":"PROGRAMAR","mes":"abril-26","proposta":"C37004-26","cliente":"ZAMP-BK","unidade":"BKN 26849 - BURGER KING - FS SBC - AV MARIA SERVIDEI DEMARCHI 1308","uf":"SP","desc":"Camara de Congelados - Substituição de Micro Motor","valor":144.38,"supervisor":"","tecnico":"","osc":"","tipo":"OSC","fat_data":"","limite":30}]; // dados de 08/04/2026
+let TOTAL_GERAL = 338;
+let VALOR_TOTAL = 1724336.0;
+const N_FAT_PLANILHA = 549;
+const VAL_FAT_PLANILHA = 2341020.0;
+let ALL_TECNICOS = ["37520", "38624", "38946", "38988", "Euripedes Gimenes", "Jales Lino", "Rafael Avelino", "Ricardo Pereira"];
+let ALL_SUPERVISORES = ["André José", "Bruno Lima", "Edwilder Costa", "Elton Douglas", "Fabio Amorim", "Fernando Melgarejo", "Flavio Bezerra", "Franckllyn Moreira", "Igor Lajusticia", "Jefferson Guedes", "Marcelo Vergne", "Ronie Banderia", "Whasington Alleby"];
+
+function recalcTotais(){
+  // DATA agora é gerado a partir de REGISTROS filtrados pela data programada no extra
+  TOTAL_GERAL = REGISTROS.length;
+  VALOR_TOTAL = REGISTROS.reduce((s,r)=>s+r.valor,0);
+  document.getElementById('kT').textContent = TOTAL_GERAL;
+}
+
+const CL={
+  'ZAMP-BK':{bg:'#DBEAFE',tx:'#1D4ED8'},'BOTICARIO':{bg:'#FCE7F3',tx:'#9D174D'},
+  'ATAKAREJO':{bg:'#FEF3C7',tx:'#92400E'},'FUNDAÇÃO':{bg:'#D1FAE5',tx:'#065F46'},
+  'LEROY':{bg:'#E0F2FE',tx:'#0369A1'},'SAMS':{bg:'#EDE9FE',tx:'#5B21B6'},
+  'AUTOZONE':{bg:'#FEE2E2',tx:'#991B1B'},'GM':{bg:'#F3F4F6',tx:'#374151'},
+  'BASF':{bg:'#FFF7ED',tx:'#9A3412'},'CARREFOUR':{bg:'#ECFDF5',tx:'#047857'},
+  'SMARTIFT':{bg:'#F5F3FF',tx:'#6D28D9'},'TENDA':{bg:'#FEF9C3',tx:'#854D0E'},
+  'GREEN4T':{bg:'#DCFCE7',tx:'#15803D'},'ASSAI':{bg:'#FFF1F2',tx:'#BE123C'},
+  'PORTO SEGURO':{bg:'#FFF1F2',tx:'#B91C1C'},'MERCANTIL':{bg:'#FDF4FF',tx:'#7E22CE'},
+  'BANCO MERCANTIL':{bg:'#FFF7ED',tx:'#C2410C'},'OBRAMAX':{bg:'#F0FDF4',tx:'#166534'},
+  'GBARBOSA':{bg:'#FEF2F2',tx:'#B91C1C'},'GIGA':{bg:'#F8FAFC',tx:'#1E3A5F'},
+  'BRADESCO':{bg:'#EFF6FF',tx:'#1E40AF'},'ZAMP-POPEYES':{bg:'#FFF8F1',tx:'#C2410C'},
+
+  'BRADESCO AGENCIAS':{bg:'#DBEAFE',tx:'#1E40AF'},
+  'DIA%':{bg:'#FFF7ED',tx:'#C2410C'},
+  'SUMERBOL':{bg:'#F0FDF4',tx:'#15803D'},
+  'ATENTO':{bg:'#F5F3FF',tx:'#4C1D95'},
+  'ACCENTURE':{bg:'#EEF2FF',tx:'#3730A3'},
+  'COBASI':{bg:'#F0FDF4',tx:'#166534'},
+  'SINDILOJAS':{bg:'#FEFCE8',tx:'#713F12'},
+  'BAUDUCCO':{bg:'#FFF7ED',tx:'#92400E'},
+};
+
+function cc(s){return CL[s]||{bg:'#F3F4F6',tx:'#374151'};}
+function fmt(v){return'R$ '+Math.round(v).toLocaleString('pt-BR');}
+function fmtK(v){return v>=1000000?'R$ '+(v/1e6).toFixed(2)+'M':v>=1000?'R$ '+(v/1000).toFixed(0)+'k':fmt(v);}
+
+// ============================================================
+// CONFIGURAÇÃO GOOGLE SHEETS
+// ============================================================
+const LS_URL_KEY = 'pex_script_url';
+const LS_STATE_KEY = 'pex_state_v11';
+let SCRIPT_URL = localStorage.getItem(LS_URL_KEY) || 'https://script.google.com/macros/s/AKfycbxyv5tuRBCjHO6XSto_A83c44HR7iiunfru8CsoCNXHEDxnV08hSa_R1Gi_SZRh5MvfsA/exec';
+
+function salvarConfig(){
+  const v = document.getElementById('script-url-input').value.trim();
+  if(!v.startsWith('https://script.google.com')){
+    document.getElementById('cfg-msg').textContent = 'URL inválida. Verifique o passo a passo.';
+    return;
+  }
+  SCRIPT_URL = v;
+  localStorage.setItem(LS_URL_KEY, v);
+  document.getElementById('sync-cfg').style.display='none';
+  document.getElementById('cfg-msg').textContent = '';
+  document.getElementById('sync-btn').disabled = false;
+  setSyncStatus('loading','Conectando...');
+  carregarDoSheets();
+}
+
+function setSyncStatus(state, msg){
+  const dot=document.getElementById('sync-dot');
+  dot.className='sync-dot '+state;
+  document.getElementById('sync-msg').textContent=msg;
+  // Habilitar/desabilitar botão
+  const btn=document.getElementById('sync-btn');
+  if(btn) btn.disabled=(state==='loading'||state==='off');
+  // Se conectado, mostrar que auto-refresh está ativo
+  if(state==='ok'){
+    clearInterval(window._countdownTimer);
+    let segundos=300;
+    window._countdownTimer=setInterval(()=>{
+      segundos--;
+      if(segundos<=0){clearInterval(window._countdownTimer);return;}
+      const m=Math.floor(segundos/60), s=segundos%60;
+      const el=document.getElementById('sync-msg');
+      if(el) el.textContent=msg+' · próximo refresh em '+m+':'+(s<10?'0':'')+s;
+    },1000);
+  }
+}
+
+// ============================================================
+// PERSISTÊNCIA — salva localmente E no Sheets
+// ============================================================
+let progState={};
+let execState={};  // laranja — executada
+let fatState={};
+let cardExtra={};  // {[id]:{data:'',sup:'',tec:''}}
+let activeCls=new Set();
+let _syncTimer=null;
+
+function cardId(dayDt,idx){return 'c-'+dayDt.replace(/-/g,'')+'-'+idx;}
+function getExtra(id){return cardExtra[id]||(cardExtra[id]={data:'',sup:'',tec:''});}
+
+function salvarLocal(){
+  localStorage.setItem(LS_STATE_KEY, JSON.stringify({prog:progState,exec:execState,fat:fatState,extra:cardExtra}));
+}
+
+function carregarLocal(){
+  try{
+    const s=JSON.parse(localStorage.getItem(LS_STATE_KEY)||'{}');
+    progState=s.prog||{};
+    execState=s.exec||{};
+    fatState=s.fat||{};
+    cardExtra=s.extra||{};
+  }catch(e){progState={};execState={};fatState={};cardExtra={};}
+}
+
+// Debounce: espera 800ms após último clique para enviar ao Sheets
+function agendarSync(){
+  clearTimeout(_syncTimer);
+  _syncTimer=setTimeout(()=>salvarNoSheets(),800);
+}
+
+async function salvarNoSheets(){
+  if(!SCRIPT_URL) return;
+  setSyncStatus('loading','Salvando...');
+  try{
+    const payload={action:'setStatus',prog:progState,exec:execState,fat:fatState,extra:cardExtra};
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    setSyncStatus('ok','Salvo no Google Sheets · '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));
+  }catch(e){
+    setSyncStatus('err','Erro ao salvar. Verifique a conexão.');
+  }
+}
+
+async function carregarDoSheets(){
+  if(!SCRIPT_URL){
+    carregarLocal();
+    recalcTotais();recalcListas();
+    gerarDATAFromRegistros();repovoarSelects();buildLegend();
+    render();renderFaturados();updateKPIs();updateProgress();updateBtns();
+    return;
+  }
+  setSyncStatus('loading','Carregando dados da planilha...');
+  try{
+    const [resDados,resSt]=await Promise.all([
+      fetch(SCRIPT_URL+'?action=dados'),
+      fetch(SCRIPT_URL+'?action=status')
+    ]);
+    const jDados=await resDados.json();
+    const jSt=await resSt.json();
+    if(jDados.erro) throw new Error(jDados.erro);
+
+    // Atualizar dados
+    REGISTROS      = jDados.registros || [];
+    FATURADOS      = jDados.faturados  || [];
+    ALL_TECNICOS   = jDados.tecnicos   || [];
+    ALL_SUPERVISORES = jDados.supervisores || [];
+    recalcTotais();
+    document.getElementById('update-date').textContent=jDados.atualizado||new Date().toLocaleDateString('pt-BR');
+
+    // Atualizar estados dos checkboxes
+    progState  = jSt.prog  || {};
+    execState  = jSt.exec  || {};
+    fatState   = jSt.fat   || {};
+    cardExtra  = jSt.extra || {};
+    salvarLocal();
+
+    recalcListas();
+    gerarDATAFromRegistros();
+    repovoarSelects();
+    buildLegend();
+    setSyncStatus('ok','Sincronizado · '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+' · '+REGISTROS.length+' corretivas');
+    render();renderFaturados();updateKPIs();updateProgress();updateBtns();
+    clearInterval(window._autoRefresh);
+    window._autoRefresh=setInterval(()=>{if(SCRIPT_URL)carregarDoSheets();},5*60*1000);
+  }catch(e){
+    setSyncStatus('err','Erro: '+e.message);
+    carregarLocal();
+    recalcTotais();recalcListas();gerarDATAFromRegistros();
+    render();renderFaturados();updateKPIs();updateProgress();updateBtns();
+  }
+}
+
+async function forcarSync(){
+  await carregarDoSheets();
+}
+
+// ── EDIÇÃO INLINE: Data, Supervisor, Técnico ──────────────────
+function setData(id, val){
+  getExtra(id).data = val;
+  salvarLocal(); agendarSync();
+  // Reagrupar cronograma pela nova data
+  gerarDATAFromRegistros();
+  render();
+  updateKPIs(); updateProgress();
+}
+
+function fmtData(v){
+  if(!v) return '';
+  const [y,m,d] = v.split('-');
+  return `${d}/${m}`;
+}
+
+function abrirDrop(id, tipo){
+  // Fechar todos os outros
+  document.querySelectorAll('.cedit-drop.open').forEach(el=>{
+    if(el.id !== `drop-${id}-${tipo}`) el.classList.remove('open');
+  });
+  const drop = document.getElementById(`drop-${id}-${tipo}`);
+  if(drop) drop.classList.toggle('open');
+}
+
+function fecharTodosDrop(){
+  document.querySelectorAll('.cedit-drop.open').forEach(el=>el.classList.remove('open'));
+}
+
+function setSup(id, val){
+  getExtra(id).sup = val;
+  const lbl = document.querySelector(`[data-id="${id}"] .cedit-sup-val`);
+  if(lbl){ lbl.textContent = val||'Supervisor'; lbl.classList.toggle('empty',!val); }
+  fecharTodosDrop(); salvarLocal(); agendarSync();
+}
+
+function setTec(id, val){
+  getExtra(id).tec = val;
+  const lbl = document.querySelector(`[data-id="${id}"] .cedit-tec-val`);
+  if(lbl){ lbl.textContent = val||'Técnico'; lbl.classList.toggle('empty',!val); }
+  fecharTodosDrop(); salvarLocal(); agendarSync();
+}
+
+// Fechar dropdowns ao clicar fora
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.cedit')) fecharTodosDrop();
+});
+
+
+// ── GERAR DATA (cronograma) A PARTIR DE REGISTROS + DATAS PROGRAMADAS ──────────
+function gerarDATAFromRegistros(){
+  // Agrupar por data programada (cardExtra[id].data) ou "sem-data"
+  const grupos = {};
+  REGISTROS.forEach((r, i) => {
+    const id    = 'r-'+i;
+    r._idx = i;  // guardar índice original
+    const ex    = cardExtra[id] || {};
+    const data  = ex.data || '';  // formato YYYY-MM-DD ou vazio
+    const chave = data || 'sem-data';
+    if(!grupos[chave]) grupos[chave] = [];
+    grupos[chave].push({...r, _id: id});
+  });
+
+  // Ordenar: datas programadas ASC, "sem-data" no final
+  const chaves = Object.keys(grupos).sort((a,b)=>{
+    if(a==='sem-data') return 1;
+    if(b==='sem-data') return -1;
+    return a.localeCompare(b);
+  });
+
+  DATA = chaves.map(chave => {
+    const items = grupos[chave];
+    const dtFmt = chave==='sem-data' ? '' : chave;
+    const lb    = chave==='sem-data' ? 'Sem data' : fmtDataLabel(chave);
+    const wd    = chave==='sem-data' ? '—' : getDiaSemana(chave);
+    return {
+      dt: chave,
+      lb: lb,
+      wd: wd,
+      r:  items,
+      n:  items.length,
+      tv: items.reduce((s,r)=>s+r.valor,0)
+    };
+  });
+}
+
+function fmtDataLabel(dt){
+  if(!dt) return 'Sem data';
+  const [y,m,d] = dt.split('-');
+  return d+'/'+m+'/'+y.slice(2);
+}
+
+function getDiaSemana(dt){
+  if(!dt||dt==='sem-data') return '—';
+  const dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  return dias[new Date(dt+'T12:00:00').getDay()];
+}
+
+function cardId(dayDt,idx){ return 'r-'+idx; }
+
+function toggleProg(id){
+  progState[id]=!progState[id];
+  refreshCard(id);updateKPIs();updateProgress();updateBtns();salvarLocal();agendarSync();
+}
+
+function toggleExec(id){
+  execState[id]=!execState[id];
+  refreshCard(id);updateKPIs();updateProgress();updateBtns();salvarLocal();agendarSync();
+}
+
+function toggleFat(id){
+  fatState[id]=!fatState[id];
+  refreshCard(id);updateKPIs();updateProgress();updateBtns();salvarLocal();agendarSync();
+}
+
+function refreshCard(id){
+  const card=document.querySelector('[data-id="'+id+'"]');
+  if(!card) return;
+  const isProg=!!progState[id];
+  const isExec=!!execState[id];
+  const isFat=!!fatState[id];
+  card.classList.toggle('programada', isProg);
+  card.classList.toggle('executada',  isExec);
+  card.classList.toggle('faturada',   isFat);
+  const pb=card.querySelector('.prog-cb');
+  const eb=card.querySelector('.exec-cb');
+  const cb=card.querySelector('.fat-cb');
+  const pl=card.querySelector('.prog-label');
+  const el=card.querySelector('.exec-label');
+  const fl=card.querySelector('.fat-label');
+  if(pb) pb.checked=isProg;
+  if(eb) eb.checked=isExec;
+  if(cb) cb.checked=isFat;
+  if(pl) pl.textContent=isProg?'Programada ✓':'Programar';
+  if(el) el.textContent=isExec?'Executada ✓':'Executado';
+  if(fl) fl.textContent=isFat?'Faturada ✓':'Faturada';
+}
+
+function updateBtns(){
+  document.getElementById('btn-clear-fat').style.display=Object.values(fatState).some(Boolean)?'':'none';
+  document.getElementById('btn-clear-prog').style.display=Object.values(progState).some(Boolean)?'':'none';
+  document.getElementById('btn-clear-exec').style.display=Object.values(execState).some(Boolean)?'':'none';
+}
+
+function toggleFatBreakdown(){
+  const body=document.getElementById('fat-meses-body');
+  const btn=document.getElementById('fat-toggle-btn');
+  const open=body.classList.toggle('open');
+  btn.textContent=open?'▲ fechar':'▼ por mês';
+}
+
+function updateKPIs(){
+  const nProg=Object.values(progState).filter(Boolean).length;
+  const nExec=Object.values(execState).filter(Boolean).length;
+  const nFatCb=Object.values(fatState).filter(Boolean).length;
+  let nPend=0;
+  REGISTROS.forEach((r,i)=>{
+    const id="r-"+i;
+    if(!fatState[id]&&!progState[id]&&!execState[id]) nPend++;
+  });
+  const pctProg=TOTAL_GERAL>0?Math.round(nProg/TOTAL_GERAL*100):0;
+  const pctExec=TOTAL_GERAL>0?Math.round(nExec/TOTAL_GERAL*100):0;
+  const valFatPlanilha=(typeof VAL_FAT_PLANILHA!=='undefined')?VAL_FAT_PLANILHA:
+    ((typeof FATURADOS!=='undefined'&&FATURADOS.length)?FATURADOS.reduce((s,r)=>s+r.valor,0):0);
+  const nFatPlanilha=(typeof N_FAT_PLANILHA!=='undefined')?N_FAT_PLANILHA:
+    ((typeof FATURADOS!=='undefined')?FATURADOS.length:0);
+  let valFatCb=0;
+  REGISTROS.forEach((r,i)=>{if(fatState["r-"+i])valFatCb+=r.valor;});
+  const valFatTotal=valFatPlanilha+valFatCb;
+  const baseTotal=VALOR_TOTAL+valFatPlanilha;
+  const pctFat=baseTotal>0?Math.round(valFatTotal/baseTotal*100):0;
+  const nFatTotal=nFatPlanilha+nFatCb;
+
+  // ── Breakdown por mês ─────────────────────────────────────────────
+  const porMes={};
+  if(typeof FATURADOS!=='undefined'&&FATURADOS.length){
+    FATURADOS.forEach(r=>{
+      const m=r.mes||'Sem mês';
+      if(!porMes[m]) porMes[m]={val:0,n:0};
+      porMes[m].val+=r.valor; porMes[m].n++;
+    });
+  }
+  REGISTROS.forEach((r,i)=>{
+    if(fatState["r-"+i]){
+      const m=r.mes||'Sem mês';
+      if(!porMes[m]) porMes[m]={val:0,n:0};
+      porMes[m].val+=r.valor; porMes[m].n++;
+    }
+  });
+  const OM={'janeiro':1,'fevereiro':2,'março':3,'abril':4,'maio':5,'junho':6,
+            'julho':7,'agosto':8,'setembro':9,'outubro':10,'novembro':11,'dezembro':12};
+  const mOrds=Object.keys(porMes).sort((a,b)=>{
+    const pa=a.split('-'), pb=b.split('-');
+    const ya=parseInt(pa[1]||0), yb=parseInt(pb[1]||0);
+    if(ya!==yb) return ya-yb;
+    return (OM[pa[0].toLowerCase()]||13)-(OM[pb[0].toLowerCase()]||13);
+  });
+  const maxV=Math.max(...mOrds.map(m=>porMes[m].val),1);
+  const bodyEl=document.getElementById('fat-meses-body');
+  if(bodyEl){
+    bodyEl.innerHTML=mOrds.map(m=>{
+      const{val,n}=porMes[m];
+      const pct=Math.round(val/maxV*100);
+      const pctT=valFatTotal>0?Math.round(val/valFatTotal*100):0;
+      return`<div class="kpi-mes-row">
+        <span class="kpi-mes-label">${m}</span>
+        <div class="kpi-mes-bar"><div class="kpi-mes-fill" style="width:${pct}%"></div></div>
+        <span class="kpi-mes-val">${fmtK(val)}</span>
+        <span class="kpi-mes-n">${n} OS&nbsp;·&nbsp;${pctT}%</span>
+      </div>`;
+    }).join('')+`<div class="kpi-mes-row" style="border-top:1px solid var(--border);margin-top:3px;padding-top:4px">
+      <span class="kpi-mes-label" style="font-weight:600;color:var(--green)">TOTAL</span>
+      <div class="kpi-mes-bar"><div class="kpi-mes-fill" style="width:100%"></div></div>
+      <span class="kpi-mes-val" style="font-weight:600">${fmtK(valFatTotal)}</span>
+      <span class="kpi-mes-n" style="font-weight:600">${nFatTotal} OS</span>
+    </div>`;
+  }
+
+  // ── Atualizar KPIs ────────────────────────────────────────────────
+  document.getElementById('kT').textContent=TOTAL_GERAL;
+  document.getElementById('kProg').textContent=nProg;
+  document.getElementById('kProg-pct').textContent=pctProg+'% do cronograma';
+  document.getElementById('kExec').textContent=nExec;
+  document.getElementById('kExec-pct').textContent=pctExec+'% do cronograma';
+  document.getElementById('kF').textContent=nFatTotal;
+  document.getElementById('kF-pct').textContent=nFatPlanilha+' planilha · '+nFatCb+' marcados';
+  document.getElementById('kP').textContent=nPend;
+  document.getElementById('kV').textContent=fmtK(VALOR_TOTAL);
+  document.getElementById('kVF').textContent=fmtK(valFatTotal);
+  document.getElementById('kVF-pct').textContent=pctFat+'% do total · clique ▼ para ver por mês';
+}
+function updateProgress(){
+  const nFat=Object.values(fatState).filter(Boolean).length;
+  const nExec=Object.values(execState).filter(Boolean).length;
+  const nProg=Object.values(progState).filter(Boolean).length;
+  const pctFat=TOTAL_GERAL>0?Math.round(nFat/TOTAL_GERAL*100):0;
+  const pctExec=TOTAL_GERAL>0?Math.round((nFat+nExec)/TOTAL_GERAL*100):0;
+  const pctProg=TOTAL_GERAL>0?Math.round((nFat+nExec+nProg)/TOTAL_GERAL*100):0;
+  document.getElementById('prog-fill-prog').style.width=pctProg+'%';
+  document.getElementById('prog-fill-exec').style.width=pctExec+'%';
+  document.getElementById('prog-fill-fat').style.width=pctFat+'%';
+  document.getElementById('prog-count').textContent=nFat+' fat. · '+nExec+' exec. · '+nProg+' prog. / '+TOTAL_GERAL;
+  const clMap={};
+  REGISTROS.forEach((r,i)=>{
+    const k=r.cliente, id="r-"+i;
+    if(!clMap[k])clMap[k]={t:0,f:0,e:0,p:0};
+    clMap[k].t++;
+    if(fatState[id])clMap[k].f++;
+    else if(execState[id])clMap[k].e++;
+    else if(progState[id])clMap[k].p++;
+  });
+  const top=Object.entries(clMap).sort((a,b)=>b[1].t-a[1].t).slice(0,10);
+  document.getElementById('prog-clients').innerHTML=top.map(([s,v])=>{
+    const pf=Math.round(v.f/v.t*100);
+    const pe=Math.round((v.f+v.e)/v.t*100);
+    const pp=Math.round((v.f+v.e+v.p)/v.t*100);
+    const{bg,tx}=cc(s);
+    return`<div class="pc">
+      <span style="background:${bg};color:${tx};font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px">${s}</span>
+      <div class="pc-bar" style="position:relative">
+        <div style="position:absolute;left:0;top:0;height:100%;width:${pp}%;background:#BFDBFE;border-radius:3px"></div>
+        <div style="position:absolute;left:0;top:0;height:100%;width:${pe}%;background:#FDE68A;border-radius:3px"></div>
+        <div style="position:absolute;left:0;top:0;height:100%;width:${pf}%;background:var(--green);border-radius:3px"></div>
+      </div>
+      <span>${v.f}f·${v.e}e·${v.p}p/${v.t}</span>
+    </div>`;
+  }).join('');
+}
+
+// Selects
+let allSups=["André José", "Bruno Lima", "Edwilder Costa", "Elton Douglas", "Fabio Amorim", "Fernando Melgarejo", "Flavio Bezerra", "Franckllyn Moreira", "Igor Lajusticia", "Jefferson Guedes", "Marcelo Vergne", "Ronie Banderia", "Whasington Alleby"];
+let allTecs=["37520", "38624", "38946", "38988", "Euripedes Gimenes", "Jales Lino", "Rafael Avelino", "Ricardo Pereira"];
+let allCls=["ASSAI", "ATAKAREJO", "ATENTO", "AUTOZONE", "BANCO MERCANTIL", "BASF", "BOTICARIO", "BRADESCO", "BRADESCO AGENCIAS", "CARREFOUR", "DIA%", "FUNDAÇÃO", "GBARBOSA", "GIGA", "GM", "GREEN4T", "LEROY", "MERCANTIL", "OBRAMAX", "PORTO SEGURO", "SAMS", "SMARTIFT", "SUMERBOL", "TENDA", "ZAMP-BK"];
+let allUFs=["AL", "BA", "CE", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RS", "SC", "SE", "SP"];
+
+function recalcListas(){
+  allSups = ALL_SUPERVISORES.length > 0 ? ALL_SUPERVISORES :
+    [...new Set(REGISTROS.map(r=>r.supervisor).filter(s=>s&&s!=="—"&&s!=="nan"))].sort();
+  allTecs = ALL_TECNICOS.length > 0 ? ALL_TECNICOS :
+    [...new Set(REGISTROS.map(r=>r.tecnico).filter(t=>t&&t.trim()&&t!=="nan"))].sort();
+  allCls  = [...new Set(REGISTROS.map(r=>r.cliente))].filter(Boolean).sort();
+  allUFs  = [...new Set(REGISTROS.map(r=>r.uf))].filter(u=>u&&u!=="nan").sort();
+}
+
+function repovoarSelects(){
+  const fS=document.getElementById('fSup'),fT=document.getElementById('fTec'),
+        fC=document.getElementById('fCli'),fU=document.getElementById('fUF');
+  if(!fS||!fT||!fC||!fU) return;
+  [fS,fT,fC,fU].forEach(el=>{while(el.options.length>1)el.remove(1);});
+  allSups.forEach(s=>fS.insertAdjacentHTML('beforeend',`<option value="${s}">${s}</option>`));
+  allTecs.forEach(t=>fT.insertAdjacentHTML('beforeend',`<option value="${t}">${t}</option>`));
+  allCls.forEach(c=>fC.insertAdjacentHTML('beforeend',`<option value="${c}">${c}</option>`));
+  allUFs.forEach(u=>fU.insertAdjacentHTML('beforeend',`<option value="${u}">${u}</option>`));
+}
+
+function recalcListas(){
+  allSups=[...new Set(DATA.flatMap(d=>d.r.map(r=>r.supervisor)).filter(s=>s&&s!=='—'&&s!=='nan'))].sort();
+  allTecs=[...new Set(DATA.flatMap(d=>d.r.map(r=>r.tecnico)).filter(t=>t&&t.trim()&&t!=='nan'&&t!=='NaN'))].sort();
+  allCls=[...new Set(DATA.flatMap(d=>d.r.map(r=>r.cliente)))].filter(Boolean).sort();
+  allUFs=[...new Set(DATA.flatMap(d=>d.r.map(r=>r.uf)))].filter(u=>u&&u!=='nan').sort();
+}
+
+function toggleFatSection(){
+  const body = document.getElementById('fat-body');
+  const chev = document.getElementById('fat-chev');
+  const open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  chev.classList.toggle('open', open);
+  if(open) renderFaturados();
+}
+
+function renderFaturados(){
+  const lbl    = document.getElementById('fat-count-lbl');
+  const grupos = document.getElementById('fat-grupos');
+  const bar    = document.getElementById('fat-total-bar');
+  const q      = (document.getElementById('fat-srch')?.value||'').toLowerCase().trim();
+  const filCli = document.getElementById('fat-fil-cli')?.value||'';
+  const filSt  = document.getElementById('fat-fil-st')?.value||'';
+
+  if(!FATURADOS||!FATURADOS.length){
+    lbl.textContent='0 faturados';
+    if(grupos) grupos.innerHTML='<div class="fat-nenhum">Nenhum faturamento registrado.</div>';
+    return;
+  }
+
+  // Popular select de clientes na primeira chamada
+  const selCli = document.getElementById('fat-fil-cli');
+  if(selCli && selCli.options.length <= 1){
+    const clis = [...new Set(FATURADOS.map(r=>r.cliente))].sort();
+    clis.forEach(c=>selCli.insertAdjacentHTML('beforeend',`<option value="${c}">${c}</option>`));
+  }
+
+  // Filtrar
+  const filtrados = FATURADOS.filter(r=>{
+    if(filCli && r.cliente !== filCli) return false;
+    if(filSt === 'EXEC' && !r.status.includes('EXEC')) return false;
+    if(filSt === 'FATURADO' && r.status !== 'FATURADO') return false;
+    if(q){
+      const hay = [r.os,r.proposta,r.unidade,r.desc,r.cliente,r.supervisor,r.tecnico,r.osc].join(' ').toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const totalVal = filtrados.reduce((s,r)=>s+r.valor,0);
+  lbl.textContent = `${FATURADOS.length} faturados · ${fmtK(FATURADOS.reduce((s,r)=>s+r.valor,0))}`;
+  bar.textContent = filtrados.length===FATURADOS.length
+    ? `${filtrados.length} registros · ${fmt(totalVal)}`
+    : `${filtrados.length} de ${FATURADOS.length} · ${fmt(totalVal)}`;
+
+  if(!filtrados.length){
+    grupos.innerHTML='<div class="fat-nenhum">Nenhum resultado para os filtros selecionados.</div>';
+    return;
+  }
+
+  // Agrupar por cliente
+  const mapa = {};
+  filtrados.forEach(r=>{
+    if(!mapa[r.cliente]) mapa[r.cliente]={items:[],val:0};
+    mapa[r.cliente].items.push(r);
+    mapa[r.cliente].val += r.valor;
+  });
+
+  const CABECALHO = `<div class="fat-row fat-row-hdr">
+    <div class="fat-cell mono">OS / Proposta</div>
+    <div class="fat-cell">Unidade / Loja</div>
+    <div class="fat-cell">Descrição</div>
+    <div class="fat-cell center">Tipo</div>
+    <div class="fat-cell center">Status</div>
+    <div class="fat-cell right">Valor</div>
+  </div>`;
+
+  grupos.innerHTML = Object.entries(mapa)
+    .sort((a,b)=>b[1].val-a[1].val)
+    .map(([cli,{items,val}],gi)=>{
+      const{bg,tx}=cc(cli);
+      const gid='fg-'+gi;
+      const rows = items.map(r=>{
+        const isExec = r.status.includes('EXEC');
+        const stLabel = isExec ? 'AG. FAT.' : 'FATURADO';
+        const stClass = isExec ? 'exec' : '';
+        return`<div class="fat-row">
+          <div class="fat-cell mono" title="${r.proposta}">${r.os?'OS '+r.os:''}<br><span style="font-size:9px;color:var(--text3)">${r.proposta}</span></div>
+          <div class="fat-cell" title="${r.unidade}">${r.unidade||'—'}</div>
+          <div class="fat-cell" title="${r.desc}">${r.desc||'—'}</div>
+          <div class="fat-cell center"><span class="fat-badge">${r.tipo||r.osc||'—'}</span></div>
+          <div class="fat-cell center"><span class="fat-badge ${stClass}">${stLabel}</span></div>
+          <div class="fat-cell right">${r.valor>0?fmt(r.valor):'—'}</div>
+        </div>`;
+      }).join('');
+
+      return`<div class="fat-grupo">
+        <div class="fat-grupo-hdr" onclick="toggleFatGrupo('${gid}')">
+          <span class="fat-grupo-pill" style="background:${bg};color:${tx}">${cli}</span>
+          <span class="fat-grupo-info">${items.length} OS${items.length>1?'':''}
+            ${items[0].supervisor?' · '+items[0].supervisor:''}</span>
+          <span class="fat-grupo-val">${fmt(val)}</span>
+          <span class="fat-grupo-chev" id="${gid}-chev">▼</span>
+        </div>
+        <div class="fat-grupo-body" id="${gid}">
+          ${CABECALHO}${rows}
+        </div>
+      </div>`;
+    }).join('');
+
+  // Atualizar KPI
+  updateKPIs();
+  updateProgress();
+}
+
+function toggleFatGrupo(id){
+  const body = document.getElementById(id);
+  const chev = document.getElementById(id+'-chev');
+  if(!body) return;
+  const open = body.classList.toggle('open');
+  if(chev) chev.classList.toggle('open', open);
+}
+// função renderFaturados reescrita acima
+
+
+function init(){
+  // Mostrar legend e selects imediatamente com dados embutidos
+  repovoarSelects();
+  buildLegend();
+  // URL configurada? Carregar do Sheets (atualiza com dados mais recentes)
+  if(SCRIPT_URL){
+    document.getElementById('sync-cfg').style.display='none';
+    document.getElementById('sync-btn').disabled=false;
+    document.getElementById('script-url-input').value=SCRIPT_URL;
+    // Renderizar primeiro com dados embutidos para não ficar em branco
+    gerarDATAFromRegistros();
+    render(); renderFaturados();
+    updateKPIs(); updateProgress(); updateBtns();
+    // Depois buscar dados atualizados do Sheets
+    carregarDoSheets();
+  } else {
+    carregarLocal();
+    recalcTotais(); recalcListas();
+    gerarDATAFromRegistros();
+    repovoarSelects(); buildLegend();
+    render(); renderFaturados();
+    updateKPIs(); updateProgress(); updateBtns();
+    setSyncStatus('off','⚠ Não conectado — dados locais. Configure a URL acima para sincronizar com a planilha.');
+  }
+}
+
+function buildLegend(){
+  // Usar allCls se populado, senão usar todos os clientes do CL
+  const lista = allCls.length > 0 ? Object.keys(CL).filter(c=>allCls.includes(c)) : Object.keys(CL);
+  document.getElementById('legend').innerHTML=lista.map(c=>{
+    const{bg,tx}=cc(c);
+    return`<span class="li" onclick="toggleCli('${c}')" id="leg-${c}"><span class="ld" style="background:${bg};border:1.5px solid ${tx}50"></span>${c}</span>`;
+  }).join('');
+}
+
+function toggleCli(c){
+  activeCls.has(c)?activeCls.delete(c):activeCls.add(c);
+  document.querySelectorAll('.li').forEach(el=>{
+    const id=el.id.replace('leg-','');
+    el.classList.toggle('dim',activeCls.size>0&&!activeCls.has(id));
+  });
+  render();
+}
+
+function render(){
+  const fS=document.getElementById('fSup').value;
+  const fT=document.getElementById('fTec').value;
+  const fC=document.getElementById('fCli').value;
+  const fU=document.getElementById('fUF').value;
+  const fFat=document.getElementById('fFat').value;
+  const q=document.getElementById('srch').value.toLowerCase().trim();
+  const isFiltered=fS||fT||fC||fU||fFat||q||activeCls.size>0;
+  let tot=0,totV=0,html='';
+
+  DATA.forEach(day=>{
+    const filt=day.r.filter((r,i)=>{
+      if(fS&&r.supervisor!==fS)return false;
+      if(fT&&r.tecnico!==fT)return false;
+      if(fC&&r.cliente!==fC)return false;
+      if(fU&&r.uf!==fU)return false;
+      if(activeCls.size>0&&!activeCls.has(r.cliente))return false;
+      const id=r._id || ('r-'+r._idx);
+      const isFat=!!fatState[id];
+      const isProg=!!progState[id];
+      const isExec=!!execState[id];
+      if(fFat==='pend'&&(isFat||isProg||isExec))return false;
+      if(fFat==='prog'&&!isProg)return false;
+      if(fFat==='exec'&&!isExec)return false;
+      if(fFat==='fat'&&!isFat)return false;
+      if(fFat==='both'&&!(isFat&&isProg))return false;
+      if(q&&![r.unidade,r.supervisor,r.tecnico,r.cliente,r.proposta,r.uf,r.desc,r.os,r.osc,r.status].join(' ').toLowerCase().includes(q))return false;
+      return true;
+    });
+    if(!filt.length)return;
+    const dV=filt.reduce((s,r)=>s+r.valor,0);
+    tot+=filt.length;totV+=dV;
+    // Mapa de índice para cada item original (garante índice correto mesmo com filtros)
+    const _idxMap=new Map(day.r.map((x,i)=>[x,i]));
+    const fatCount=filt.filter(r=>fatState[cardId(day.dt,_idxMap.get(r))]).length;
+    const execCount=filt.filter(r=>execState[cardId(day.dt,_idxMap.get(r))]).length;
+    const progCount=filt.filter(r=>progState[cardId(day.dt,_idxMap.get(r))]).length;
+    const hasUrgent=filt.some(r=>r.limite<=15);
+    const uniqCls=[...new Set(filt.map(r=>r.cliente))];
+
+    html+=`<div class="day-block${hasUrgent?' urgent':''}">
+      <div class="day-hdr" onclick="tog(this)">
+        <span class="dbadge">${day.lb}</span>
+        <span class="dwd">${day.wd}</span>
+        <div class="dpills">${uniqCls.slice(0,5).map(s=>{const{bg,tx}=cc(s);return`<span class="pill" style="background:${bg};color:${tx}">${s}</span>`;}).join('')}${uniqCls.length>5?`<span style="font-size:10px;color:var(--text3)">+${uniqCls.length-5}</span>`:''}</div>
+        <div class="dstats">
+          <div class="dstat"><strong>${filt.length}</strong> corr.</div>
+          <div class="dstat"><strong>${fmtK(dV)}</strong></div>
+        </div>
+        <span class="dprog${progCount===0&&fatCount===0&&execCount===0?' zero':''}" style="${fatCount>0?'background:var(--green-lt);color:var(--green)':execCount>0?'background:#FEF3C7;color:#D97706':progCount>0?'background:var(--blue-lt);color:var(--blue)':''}">${fatCount>0?fatCount+' fat.':execCount>0?execCount+' exec.':progCount>0?progCount+' prog.':'0/'+filt.length}</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="day-body">
+        <div class="cgrid">
+          ${filt.map(r=>{
+            const id = r._id || cardId(day.dt,_idxMap.get(r));
+            const realIdx = r._idx !== undefined ? r._idx : _idxMap.get(r);
+            const isFat=!!fatState[id];
+            const isProg=!!progState[id];
+            const isExec=!!execState[id];
+            // isProg e isExec são independentes — não excluir quando faturado
+            const ex=getExtra(id);
+            const{bg,tx}=cc(r.cliente);
+            const urg=r.limite<=10?'urg':r.limite<=17?'med':'';
+            const lbg=r.limite<=10?'#FEE2E2':r.limite<=17?'#FEF3C7':'#F3F4F6';
+            const ltx=r.limite<=10?'#991B1B':r.limite<=17?'#92400E':'#6B6960';
+            const osParts=[r.os?'OS '+r.os:'',r.osc&&r.osc.trim()&&r.osc!=='nan'&&r.osc!=='N/A'?'OSC: '+r.osc:''].filter(Boolean).join(' · ');
+            const cardClass=['card',urg,isProg?'programada':'',isExec?'executada':'',isFat?'faturada':''].filter(Boolean).join(' ');
+            // supList/tecList removidos — inputs livres agora
+            return`<div class="${cardClass}" data-id="${id}">
+              <div class="ctop">
+                <span class="cpill" style="background:${bg};color:${tx}">${r.cliente}</span>
+                <span class="dlimit" style="background:${lbg};color:${ltx}">${r.limite<=28?'corte '+r.limite+'/04':'sem corte'}</span>
+                ${r.uf?`<span class="uf-tag">${r.uf}</span>`:''}
+              </div>
+              <div class="ccli" title="${r.unidade}">${r.unidade||'—'}</div>
+              <div class="cdesc" title="${r.desc}">${r.desc||'—'}</div>
+              ${osParts?`<div style="margin-bottom:5px"><span class="os-tag">${osParts}</span>${r.proposta?` <span class="os-tag">${r.proposta}</span>`:''}</div>`:''}
+              <div style="margin-bottom:5px"><span class="status-tag">${r.status}</span></div>
+              <div class="card-edit">
+                <div class="cedit" onclick="event.stopPropagation()">
+                  <div class="cedit-l">📅 Data</div>
+                  <input type="date" value="${ex.data||''}"
+                    onchange="setData('${id}',this.value)" onclick="event.stopPropagation()"
+                    style="font-size:11px;font-family:var(--sans)">
+                </div>
+                <div class="cedit" onclick="event.stopPropagation()">
+                  <div class="cedit-l">👔 Supervisor</div>
+                  <input type="text" list="list-sup-${id}"
+                    value="${ex.sup||r.supervisor||''}"
+                    placeholder="Supervisor..."
+                    onchange="setSup('${id}',this.value)"
+                    oninput="setSup('${id}',this.value)"
+                    onclick="event.stopPropagation()"
+                    style="width:100%;border:none;background:transparent;font-size:11px;font-family:var(--sans);color:var(--text);outline:none;padding:0">
+                  <datalist id="list-sup-${id}">${allSups.map(s=>`<option value="${s}">`).join('')}</datalist>
+                </div>
+                <div class="cedit" onclick="event.stopPropagation()">
+                  <div class="cedit-l">🔧 Técnico</div>
+                  <input type="text" list="list-tec-${id}"
+                    value="${ex.tec||''}"
+                    placeholder="Digitar técnico..."
+                    onchange="setTec('${id}',this.value)"
+                    oninput="setTec('${id}',this.value)"
+                    onclick="event.stopPropagation()"
+                    style="width:100%;border:none;background:transparent;font-size:11px;font-family:var(--sans);color:var(--text);outline:none;padding:0">
+                  <datalist id="list-tec-${id}">${allTecs.map(t=>`<option value="${t}">`).join('')}</datalist>
+                </div>
+              </div>
+              <div class="cfoot">
+                <div class="checks-row">
+                  <div class="check-wrap">
+                    <input type="checkbox" class="prog-cb" id="p-${id}" ${isProg?'checked':''} onclick="toggleProg('${id}')">
+                    <label class="prog-label" for="p-${id}">${isProg?'Programada ✓':'Programar'}</label>
+                  </div>
+                  <div class="check-wrap">
+                    <input type="checkbox" class="exec-cb" id="e-${id}" ${isExec?'checked':''} onclick="toggleExec('${id}')">
+                    <label class="exec-label" for="e-${id}">${isExec?'Executada ✓':'Executado'}</label>
+                  </div>
+                  <div class="check-wrap">
+                    <input type="checkbox" class="fat-cb" id="f-${id}" ${isFat?'checked':''} onclick="toggleFat('${id}')">
+                    <label class="fat-label" for="f-${id}">${isFat?'Faturada ✓':'Faturada'}</label>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div class="cval">${r.valor>0?fmt(r.valor):'—'}</div>
+                  <div class="cprop">${ex.data?fmtData(ex.data)+' · ':''  }${r.mes}</div>
+                </div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="dfoot">
+          <span class="fp">${filt.length} corretivas</span>
+          <span class="fp">Total ${fmt(dV)}</span>
+          <span class="fp">TM ${fmt(dV/filt.length)}</span>
+          <span class="fp" style="background:var(--blue-lt);color:var(--blue)">${progCount} prog.</span>
+          <span class="fp" style="background:#FEF3C7;color:#D97706">${execCount} exec.</span>
+          <span class="fp" style="background:var(--green-lt);color:var(--green)">${fatCount} fat.</span>
+          <span class="fp" style="background:var(--amber-lt);color:var(--amber)">${filt.filter(r=>{const id=cardId(day.dt,_idxMap.get(r));return !fatState[id]&&!progState[id]&&!execState[id];}).length} sem ação</span>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('sched').innerHTML=html||`<div class="no-res">Nenhuma corretiva encontrada com os filtros atuais.</div>`;
+  const fi=document.getElementById('filter-info');
+  fi.style.display=isFiltered?'block':'none';
+  if(isFiltered)fi.textContent=`Filtro ativo · ${tot} corretivas · ${fmt(totV)}`;
+}
+
+function tog(hdr){
+  const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  hdr.classList.toggle('open',open);chev.classList.toggle('open',open);
+}
+function toggleAll(open){
+  document.querySelectorAll('.day-hdr').forEach(h=>{
+    const b=h.nextElementSibling,c=h.querySelector('.chev');
+    if(b){b.classList.toggle('open',open);h.classList.toggle('open',open);c.classList.toggle('open',open);}
+  });
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function clearFaturadas(){
+  if(!confirm('Limpar todas as corretivas marcadas como faturadas?'))return;
+  fatState={};render();updateKPIs();updateProgress();updateBtns();salvarLocal();agendarSync();
+}
+function clearExecutadas(){
+  if(!confirm('Limpar todas as corretivas marcadas como executadas?'))return;
+  execState={};render();updateKPIs();updateProgress();updateBtns();salvarLocal();agendarSync();
+}
+function clearProgramadas(){
+  if(!confirm('Limpar todas as corretivas marcadas como programadas?'))return;
+  progState={};render();updateKPIs();updateProgress();updateBtns();salvarLocal();agendarSync();
+}
+function exportCSV(){
+  const rows=[['Proposta','OS','OSC','Cliente','Unidade','UF','Descrição','Status Base','Supervisor Base','Supervisor Prog.','Técnico Prog.','Data Prog.','Mês','Valor','Programada','Executada','Faturada']];
+  REGISTROS.forEach((r,i)=>{
+    const id='r-'+i;
+    const ex=cardExtra[id]||{};
+    rows.push([r.proposta,r.os,r.osc,r.cliente,r.unidade,r.uf,r.desc,r.status,r.supervisor,ex.sup||'',ex.tec||'',ex.data||'',r.mes,r.valor.toFixed(2),progState[id]?'SIM':'',execState[id]?'SIM':'',fatState[id]?'SIM':'']);
+  });
+  const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='corretivas_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+init();
+</script>
+</body>
+</html>
