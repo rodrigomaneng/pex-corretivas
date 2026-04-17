@@ -327,6 +327,16 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 </button>
   </div>
 
+  <!-- SELETOR MÊS KPIs -->
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem;flex-wrap:wrap">
+    <span style="font-size:12px;color:var(--text3)">Visualizar por mês:</span>
+    <select id="sel-mes-kpi" onchange="updateKPIs();updateProgress();render()"
+      style="font-size:12px;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;outline:none">
+      <option value="">Todos os meses</option>
+    </select>
+    <span id="kpi-mes-badge" style="display:none;font-size:11px;padding:3px 10px;border-radius:6px;background:var(--blue-light);color:var(--blue);font-weight:600"></span>
+  </div>
+
   <!-- KPIs -->
   <div class="kpis">
     <div class="kpi"><div class="kpi-l">Total corretivas</div><div class="kpi-v" id="kT">341</div><div class="kpi-s">base real · a programar</div></div>
@@ -399,6 +409,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
     <div id="fat-body" style="display:none">
       <div class="fat-toolbar">
         <input class="fat-srch" id="fat-srch" placeholder="🔍 Buscar OS, proposta, unidade, descrição..." oninput="renderFaturados()">
+        <select class="fat-sel" id="fat-fil-mes" onchange="renderFaturados()"><option value="">Todos os meses</option></select>
         <select class="fat-sel" id="fat-fil-cli" onchange="renderFaturados()"><option value="">Todos os clientes</option></select>
         <select class="fat-sel" id="fat-fil-st"  onchange="renderFaturados()">
           <option value="">Todos os status</option>
@@ -618,8 +629,15 @@ async function forcarSync(){
 // ── EDIÇÃO INLINE: Data, Supervisor, Técnico ──────────────────
 function setData(id, val){
   getExtra(id).data = val;
+  // Auto-marcar Programado ao inserir data
+  if(val && val.trim()!==''){
+    if(!progState[id]){
+      progState[id]=true;
+      const cb=document.getElementById('p-'+id);
+      if(cb){ cb.checked=true; }
+    }
+  }
   salvarLocal(); agendarSync();
-  // Reagrupar cronograma pela nova data
   gerarDATAFromRegistros();
   render();
   updateKPIs(); updateProgress();
@@ -765,16 +783,31 @@ function toggleFatBreakdown(){
 }
 
 function updateKPIs(){
-  const nProg=Object.values(progState).filter(Boolean).length;
-  const nExec=Object.values(execState).filter(Boolean).length;
-  const nFatCb=Object.values(fatState).filter(Boolean).length;
+  const mesFil = typeof getMesFiltro==='function' ? getMesFiltro() : '';
+  // Filtrar registros pelo mês selecionado
+  const regsAll = REGISTROS;
+  const regs = mesFil ? regsAll.filter(r=>r.mes===mesFil) : regsAll;
+  const idxMap = regs.map(r=>regsAll.indexOf(r));
+  const TOTAL_MES = regs.length;
+  const VALOR_MES = regs.reduce((s,r)=>s+(r.valor||0),0);
+
+  // Atualizar badge de mês ativo
+  const badge=document.getElementById('kpi-mes-badge');
+  if(badge){
+    badge.style.display=mesFil?'':'none';
+    badge.textContent=mesFil?mesFil.replace('-26',' 2026').replace('-25',' 2025'):'';
+  }
+
+  const nProg = idxMap.filter(i=>progState['r-'+i]).length;
+  const nExec = idxMap.filter(i=>execState['r-'+i]).length;
+  const nFatCb= idxMap.filter(i=>fatState['r-'+i]).length;
   let nPend=0;
-  REGISTROS.forEach((r,i)=>{
-    const id="r-"+i;
+  regs.forEach((r,j)=>{
+    const id='r-'+idxMap[j];
     if(!fatState[id]&&!progState[id]&&!execState[id]) nPend++;
   });
-  const pctProg=TOTAL_GERAL>0?Math.round(nProg/TOTAL_GERAL*100):0;
-  const pctExec=TOTAL_GERAL>0?Math.round(nExec/TOTAL_GERAL*100):0;
+  const pctProg=TOTAL_MES>0?Math.round(nProg/TOTAL_MES*100):0;
+  const pctExec=TOTAL_MES>0?Math.round(nExec/TOTAL_MES*100):0;
   const valFatPlanilha=(typeof VAL_FAT_PLANILHA!=='undefined')?VAL_FAT_PLANILHA:
     ((typeof FATURADOS!=='undefined'&&FATURADOS.length)?FATURADOS.reduce((s,r)=>s+r.valor,0):0);
   const nFatPlanilha=(typeof N_FAT_PLANILHA!=='undefined')?N_FAT_PLANILHA:
@@ -832,7 +865,7 @@ function updateKPIs(){
   }
 
   // ── Atualizar KPIs ────────────────────────────────────────────────
-  document.getElementById('kT').textContent=TOTAL_GERAL;
+  document.getElementById('kT').textContent=TOTAL_MES;
   document.getElementById('kProg').textContent=nProg;
   document.getElementById('kProg-pct').textContent=pctProg+'% do cronograma';
   document.getElementById('kExec').textContent=nExec;
@@ -840,7 +873,7 @@ function updateKPIs(){
   document.getElementById('kF').textContent=nFatTotal;
   document.getElementById('kF-pct').textContent=nFatPlanilha+' planilha · '+nFatCb+' marcados';
   document.getElementById('kP').textContent=nPend;
-  document.getElementById('kV').textContent=fmtK(VALOR_TOTAL);
+  document.getElementById('kV').textContent=fmtK(VALOR_MES);
   document.getElementById('kVF').textContent=fmtK(valFatTotal);
   document.getElementById('kVF-pct').textContent=pctFat+'% do total · clique ▼ para ver por mês';
 }
@@ -906,6 +939,8 @@ function repovoarSelects(){
   allTecs.forEach(t=>fT.insertAdjacentHTML('beforeend',`<option value="${t}">${t}</option>`));
   allCls.forEach(c=>fC.insertAdjacentHTML('beforeend',`<option value="${c}">${c}</option>`));
   allUFs.forEach(u=>fU.insertAdjacentHTML('beforeend',`<option value="${u}">${u}</option>`));
+  // Popular seletor de mês nos KPIs
+  if(typeof popularSelMes === 'function') popularSelMes();
 }
 
 function recalcListas(){
@@ -929,6 +964,7 @@ function renderFaturados(){
   const grupos = document.getElementById('fat-grupos');
   const bar    = document.getElementById('fat-total-bar');
   const q      = (document.getElementById('fat-srch')?.value||'').toLowerCase().trim();
+  const filMes = document.getElementById('fat-fil-mes')?.value||'';
   const filCli = document.getElementById('fat-fil-cli')?.value||'';
   const filSt  = document.getElementById('fat-fil-st')?.value||'';
 
@@ -936,6 +972,21 @@ function renderFaturados(){
     lbl.textContent='0 faturados';
     if(grupos) grupos.innerHTML='<div class="fat-nenhum">Nenhum faturamento registrado.</div>';
     return;
+  }
+
+  // Popular select de meses na primeira chamada
+  const selMesFat = document.getElementById('fat-fil-mes');
+  if(selMesFat && selMesFat.options.length <= 1){
+    const OM={'janeiro':1,'fevereiro':2,'março':3,'abril':4,'maio':5,'junho':6,
+              'julho':7,'agosto':8,'setembro':9,'outubro':10,'novembro':11,'dezembro':12};
+    const mesesFat = [...new Set(FATURADOS.map(r=>r.mes).filter(Boolean))].sort((a,b)=>{
+      const pa=a.split('-'), pb=b.split('-');
+      const ya=parseInt(pa[1]||0), yb=parseInt(pb[1]||0);
+      if(ya!==yb) return ya-yb;
+      return (OM[pa[0].toLowerCase()]||13)-(OM[pb[0].toLowerCase()]||13);
+    });
+    mesesFat.forEach(m=>selMesFat.insertAdjacentHTML('beforeend',
+      `<option value="${m}">${m.replace('-26',' 2026').replace('-25',' 2025')}</option>`));
   }
 
   // Popular select de clientes na primeira chamada
@@ -947,6 +998,7 @@ function renderFaturados(){
 
   // Filtrar
   const filtrados = FATURADOS.filter(r=>{
+    if(filMes && r.mes !== filMes) return false;
     if(filCli && r.cliente !== filCli) return false;
     if(filSt === 'EXEC' && !r.status.includes('EXEC')) return false;
     if(filSt === 'FATURADO' && r.status !== 'FATURADO') return false;
@@ -1022,6 +1074,29 @@ function renderFaturados(){
   updateKPIs();
   updateProgress();
 }
+
+
+// ── Popular seletor de mês nos KPIs ──────────────────────────────────────
+function popularSelMes(){
+  const sel=document.getElementById('sel-mes-kpi');
+  if(!sel) return;
+  const meses=new Set();
+  if(typeof REGISTROS!=='undefined') REGISTROS.forEach(r=>{if(r.mes) meses.add(r.mes);});
+  if(typeof FATURADOS!=='undefined') FATURADOS.forEach(r=>{if(r.mes) meses.add(r.mes);});
+  const OM={'janeiro':1,'fevereiro':2,'março':3,'abril':4,'maio':5,'junho':6,
+            'julho':7,'agosto':8,'setembro':9,'outubro':10,'novembro':11,'dezembro':12};
+  const sorted=[...meses].sort((a,b)=>{
+    const pa=a.split('-'),pb=b.split('-');
+    const ya=parseInt(pa[1]||0),yb=parseInt(pb[1]||0);
+    if(ya!==yb) return ya-yb;
+    return (OM[pa[0].toLowerCase()]||13)-(OM[pb[0].toLowerCase()]||13);
+  });
+  const cur=sel.value;
+  sel.innerHTML='<option value="">Todos os meses</option>'+
+    sorted.map(m=>`<option value="${m}"${m===cur?' selected':''}>${m.replace('-26',' 2026').replace('-25',' 2025')}</option>`).join('');
+}
+
+function getMesFiltro(){ return document.getElementById('sel-mes-kpi')?.value||''; }
 
 function toggleFatGrupo(id){
   const body = document.getElementById(id);
@@ -1178,12 +1253,14 @@ function render(){
   const fC=document.getElementById('fCli').value;
   const fU=document.getElementById('fUF').value;
   const fFat=document.getElementById('fFat').value;
+  const fMes=getMesFiltro ? getMesFiltro() : '';
   const q=document.getElementById('srch').value.toLowerCase().trim();
-  const isFiltered=fS||fT||fC||fU||fFat||q||activeCls.size>0;
+  const isFiltered=fS||fT||fC||fU||fFat||fMes||q||activeCls.size>0;
   let tot=0,totV=0,html='';
 
   DATA.forEach(day=>{
     const filt=day.r.filter((r,i)=>{
+      if(fMes&&r.mes!==fMes)return false;
       if(fS&&r.supervisor!==fS)return false;
       if(fT&&r.tecnico!==fT)return false;
       if(fC&&r.cliente!==fC)return false;
