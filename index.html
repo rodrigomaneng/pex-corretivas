@@ -376,10 +376,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
   <!-- TOOLBAR -->
   <div class="toolbar">
     <input class="srch" id="srch" placeholder="Buscar unidade, OS, proposta, supervisor, técnico..." oninput="render()">
-    <select class="sel" id="fSup" onchange="render()"><option value="">Todos os supervisores</option><option value="André José">André José</option><option value="Bruno Lima">Bruno Lima</option><option value="Edwilder Costa">Edwilder Costa</option><option value="Elton Douglas">Elton Douglas</option><option value="Fabio Amorim">Fabio Amorim</option><option value="Fernando Melgarejo">Fernando Melgarejo</option><option value="Flavio Bezerra">Flavio Bezerra</option><option value="Franckllyn Moreira">Franckllyn Moreira</option><option value="Igor Lajusticia">Igor Lajusticia</option><option value="Jefferson Guedes">Jefferson Guedes</option><option value="Marcelo Vergne">Marcelo Vergne</option><option value="Ronie Banderia">Ronie Banderia</option><option value="Whasington Alleby">Whasington Alleby</option></select>
+    <select class="sel" id="fSup" onchange="render()"><option value="">Todos os supervisores</option><option value="André José">André José</option><option value="Bruno Lima">Bruno Lima</option><option value="Edwilder Costa">Edwilder Costa</option><option value="Elton Douglas">Elton Douglas</option><option value="Fabio Amorim">Fabio Amorim</option><option value="Fernando Melgarejo">Fernando Melgarejo</option><option value="Flavio Bezerra">Flavio Bezerra</option><option value="Franckllyn Moreira">Franckllyn Moreira</option><option value="Igor Lajusticia">Igor Lajusticia</option><option value="Jefferson Guedes">Jefferson Guedes</option><option value="Marcelo Vergne">Marcelo Vergne</option><option value="Raul Rodrigues">Raul Rodrigues</option><option value="Rodrigo Silva">Rodrigo Silva</option><option value="Ronie Banderia">Ronie Banderia</option><option value="Vagner de Brito">Vagner de Brito</option><option value="Whasington Kalleby">Whasington Kalleby</option></select>
     <select class="sel" id="fTec" onchange="render()"><option value="">Todos os técnicos</option><option value="37520">37520</option><option value="38624">38624</option><option value="38946">38946</option><option value="38988">38988</option><option value="Euripedes Gimenes">Euripedes Gimenes</option><option value="Jales Lino">Jales Lino</option><option value="Rafael Avelino">Rafael Avelino</option><option value="Ricardo Pereira">Ricardo Pereira</option></select>
     <select class="sel" id="fCli" onchange="render()"><option value="">Todos os clientes</option><option value="ASSAI">ASSAI</option><option value="ATAKAREJO">ATAKAREJO</option><option value="ATENTO">ATENTO</option><option value="AUTOZONE">AUTOZONE</option><option value="BANCO MERCANTIL">BANCO MERCANTIL</option><option value="BASF">BASF</option><option value="BOTICARIO">BOTICARIO</option><option value="BRADESCO">BRADESCO</option><option value="BRADESCO AGENCIAS">BRADESCO AGENCIAS</option><option value="CARREFOUR">CARREFOUR</option><option value="DIA%">DIA%</option><option value="FUNDAÇÃO">FUNDAÇÃO</option><option value="GBARBOSA">GBARBOSA</option><option value="GIGA">GIGA</option><option value="GM">GM</option><option value="GREEN4T">GREEN4T</option><option value="LEROY">LEROY</option><option value="MERCANTIL">MERCANTIL</option><option value="OBRAMAX">OBRAMAX</option><option value="PORTO SEGURO">PORTO SEGURO</option><option value="SAMS">SAMS</option><option value="SMARTIFT">SMARTIFT</option><option value="SUMERBOL">SUMERBOL</option><option value="TENDA">TENDA</option><option value="ZAMP-BK">ZAMP-BK</option></select>
-    <select class="sel" id="fUF" onchange="render()"><option value="">Todos os estados</option><option value="AL">AL</option><option value="BA">BA</option><option value="CE">CE</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MG">MG</option><option value="MS">MS</option><option value="MT">MT</option><option value="PA">PA</option><option value="PB">PB</option><option value="PE">PE</option><option value="PI">PI</option><option value="PR">PR</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="SC">SC</option><option value="SE">SE</option><option value="SP">SP</option></select>
+    <select class="sel" id="fUF" onchange="render()"><option value="">Todos os estados</option><option value="AL">AL</option><option value="AP">AP</option><option value="BA">BA</option><option value="BH">BH</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MG">MG</option><option value="MS">MS</option><option value="MT">MT</option><option value="PA">PA</option><option value="PB">PB</option><option value="PE">PE</option><option value="PR">PR</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RO">RO</option><option value="RS">RS</option><option value="SE">SE</option><option value="SP">SP</option><option value="TO">TO</option></select>
     <select class="sel" id="fFat" onchange="render()">
       <option value="">Todas</option>
       <option value="pend">Sem ação</option>
@@ -437,7 +437,7 @@ let VALOR_TOTAL = 1724336.0;
 const N_FAT_PLANILHA = 549;
 const VAL_FAT_PLANILHA = 2341020.0;
 let ALL_TECNICOS = ["37520", "38624", "38946", "38988", "Euripedes Gimenes", "Jales Lino", "Rafael Avelino", "Ricardo Pereira"];
-let ALL_SUPERVISORES = ["André José", "Bruno Lima", "Edwilder Costa", "Elton Douglas", "Fabio Amorim", "Fernando Melgarejo", "Flavio Bezerra", "Franckllyn Moreira", "Igor Lajusticia", "Jefferson Guedes", "Marcelo Vergne", "Ronie Banderia", "Whasington Alleby"];
+let ALL_SUPERVISORES = [];
 
 function recalcTotais(){
   // DATA agora é gerado a partir de REGISTROS filtrados pela data programada no extra
@@ -916,10 +916,10 @@ function updateProgress(){
 }
 
 // Selects
-let allSups=["André José", "Bruno Lima", "Edwilder Costa", "Elton Douglas", "Fabio Amorim", "Fernando Melgarejo", "Flavio Bezerra", "Franckllyn Moreira", "Igor Lajusticia", "Jefferson Guedes", "Marcelo Vergne", "Ronie Banderia", "Whasington Alleby"];
+let allSups=["André José", "Bruno Lima", "Edwilder Costa", "Elton Douglas", "Fabio Amorim", "Fernando Melgarejo", "Flavio Bezerra", "Franckllyn Moreira", "Igor Lajusticia", "Jefferson Guedes", "Marcelo Vergne", "Raul Rodrigues", "Rodrigo Silva", "Ronie Banderia", "Vagner de Brito", "Whasington Kalleby"];
 let allTecs=["37520", "38624", "38946", "38988", "Euripedes Gimenes", "Jales Lino", "Rafael Avelino", "Ricardo Pereira"];
 let allCls=["ASSAI", "ATAKAREJO", "ATENTO", "AUTOZONE", "BANCO MERCANTIL", "BASF", "BOTICARIO", "BRADESCO", "BRADESCO AGENCIAS", "CARREFOUR", "DIA%", "FUNDAÇÃO", "GBARBOSA", "GIGA", "GM", "GREEN4T", "LEROY", "MERCANTIL", "OBRAMAX", "PORTO SEGURO", "SAMS", "SMARTIFT", "SUMERBOL", "TENDA", "ZAMP-BK"];
-let allUFs=["AL", "BA", "CE", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RS", "SC", "SE", "SP"];
+let allUFs=["AL", "AP", "BA", "BH", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PR", "RJ", "RN", "RO", "RS", "SE", "SP", "TO"];
 
 function recalcListas(){
   allSups = ALL_SUPERVISORES.length > 0 ? ALL_SUPERVISORES :
@@ -944,10 +944,10 @@ function repovoarSelects(){
 }
 
 function recalcListas(){
-  allSups=[...new Set(DATA.flatMap(d=>d.r.map(r=>r.supervisor)).filter(s=>s&&s!=='—'&&s!=='nan'))].sort();
-  allTecs=[...new Set(DATA.flatMap(d=>d.r.map(r=>r.tecnico)).filter(t=>t&&t.trim()&&t!=='nan'&&t!=='NaN'))].sort();
-  allCls=[...new Set(DATA.flatMap(d=>d.r.map(r=>r.cliente)))].filter(Boolean).sort();
-  allUFs=[...new Set(DATA.flatMap(d=>d.r.map(r=>r.uf)))].filter(u=>u&&u!=='nan').sort();
+  allSups=[...new Set(REGISTROS.map(r=>r.supervisor).filter(s=>s&&s!=='—'&&s!=='nan'))].sort();
+  allTecs=[...new Set(REGISTROS.map(r=>r.tecnico).filter(t=>t&&t.trim()&&t!=='nan'&&t!=='NaN'))].sort();
+  allCls=[...new Set(REGISTROS.map(r=>r.cliente))].filter(Boolean).sort();
+  allUFs=[...new Set(REGISTROS.map(r=>r.uf))].filter(u=>u&&u!=='nan').sort();
 }
 
 function toggleFatSection(){
