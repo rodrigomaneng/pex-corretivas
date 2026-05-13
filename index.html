@@ -380,7 +380,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
     <select class="sel" id="fTec" onchange="render()"><option value="">Todos os técnicos</option><option value="37520">37520</option><option value="38624">38624</option><option value="38946">38946</option><option value="38988">38988</option><option value="Euripedes Gimenes">Euripedes Gimenes</option><option value="Jales Lino">Jales Lino</option><option value="Rafael Avelino">Rafael Avelino</option><option value="Ricardo Pereira">Ricardo Pereira</option></select>
     <select class="sel" id="fCli" onchange="render()"><option value="">Todos os clientes</option><option value="ASSAI">ASSAI</option><option value="ATAKAREJO">ATAKAREJO</option><option value="ATENTO">ATENTO</option><option value="AUTOZONE">AUTOZONE</option><option value="BANCO MERCANTIL">BANCO MERCANTIL</option><option value="BASF">BASF</option><option value="BOTICARIO">BOTICARIO</option><option value="BRADESCO">BRADESCO</option><option value="BRADESCO AGENCIAS">BRADESCO AGENCIAS</option><option value="CARREFOUR">CARREFOUR</option><option value="DIA%">DIA%</option><option value="FUNDAÇÃO">FUNDAÇÃO</option><option value="GBARBOSA">GBARBOSA</option><option value="GIGA">GIGA</option><option value="GM">GM</option><option value="GREEN4T">GREEN4T</option><option value="LEROY">LEROY</option><option value="MERCANTIL">MERCANTIL</option><option value="OBRAMAX">OBRAMAX</option><option value="PORTO SEGURO">PORTO SEGURO</option><option value="SAMS">SAMS</option><option value="SMARTIFT">SMARTIFT</option><option value="SUMERBOL">SUMERBOL</option><option value="TENDA">TENDA</option><option value="ZAMP-BK">ZAMP-BK</option></select>
     <select class="sel" id="fUF" onchange="render()"><option value="">Todos os estados</option><option value="AL">AL</option><option value="AP">AP</option><option value="BA">BA</option><option value="BH">BH</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MG">MG</option><option value="MS">MS</option><option value="MT">MT</option><option value="PA">PA</option><option value="PB">PB</option><option value="PE">PE</option><option value="PR">PR</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RO">RO</option><option value="RS">RS</option><option value="SE">SE</option><option value="SP">SP</option><option value="TO">TO</option></select>
-    <select class="sel" id="fFat" onchange="render()">
+    <select class="sel" id="fFat" onchange="render();toggleSelMesFat()">
       <option value="">Todas</option>
       <option value="pend">Sem ação</option>
       <option value="prog">Programadas</option>
@@ -388,6 +388,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
       <option value="fat">Faturadas</option>
       <option value="both">Prog. + Faturadas</option>
     </select>
+    <select class="sel" id="fFatMes" onchange="render()" style="display:none"><option value="">Todos os meses</option></select>
     <button class="btn" onclick="toggleAll(true)">+ Expandir</button>
     <button class="btn" onclick="toggleAll(false)">− Recolher</button>
     <!-- botões de limpar removidos para evitar acidentes em uso compartilhado -->
@@ -504,15 +505,7 @@ function setSyncStatus(state, msg){
   if(btn) btn.disabled=(state==='loading'||state==='off');
   // Se conectado, mostrar que auto-refresh está ativo
   if(state==='ok'){
-    clearInterval(window._countdownTimer);
-    let segundos=300;
-    window._countdownTimer=setInterval(()=>{
-      segundos--;
-      if(segundos<=0){clearInterval(window._countdownTimer);return;}
-      const m=Math.floor(segundos/60), s=segundos%60;
-      const el=document.getElementById('sync-msg');
-      if(el) el.textContent=msg+' · próximo refresh em '+m+':'+(s<10?'0':'')+s;
-    },1000);
+    // countdown removido
   }
 }
 
@@ -612,8 +605,7 @@ async function carregarDoSheets(){
     buildLegend();
     setSyncStatus('ok','Sincronizado · '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+' · '+REGISTROS.length+' corretivas');
     render();renderFaturados();updateKPIs();updateProgress();updateBtns();
-    clearInterval(window._autoRefresh);
-    window._autoRefresh=setInterval(()=>{if(SCRIPT_URL)carregarDoSheets();},30*60*1000); // auto-refresh a cada 30 minutos
+    // auto-refresh removido — use o botão "Sincronizar com planilha"
   }catch(e){
     setSyncStatus('err','Erro: '+e.message);
     carregarLocal();
@@ -819,21 +811,26 @@ function updateKPIs(){
   const pctFat=baseTotal>0?Math.round(valFatTotal/baseTotal*100):0;
   const nFatTotal=nFatPlanilha+nFatCb;
 
-  // ── Breakdown por mês ─────────────────────────────────────────────
+  // ── Breakdown por mês — planilha separado de cards marcados ────
   const porMes={};
   if(typeof FATURADOS!=='undefined'&&FATURADOS.length){
     FATURADOS.forEach(r=>{
       const m=r.mes||'Sem mês';
-      if(!porMes[m]) porMes[m]={val:0,n:0};
+      if(!porMes[m]) porMes[m]={val:0,n:0,valCb:0,nCb:0};
       porMes[m].val+=r.valor; porMes[m].n++;
     });
   }
   REGISTROS.forEach((r,i)=>{
-    if(fatState["r-"+i]){
+    if(fatState['r-'+i]){
       const m=r.mes||'Sem mês';
-      if(!porMes[m]) porMes[m]={val:0,n:0};
-      porMes[m].val+=r.valor; porMes[m].n++;
+      if(!porMes[m]) porMes[m]={val:0,n:0,valCb:0,nCb:0};
+      porMes[m].valCb+=r.valor; porMes[m].nCb++;
     }
+  });
+  // Garantir que todos os meses têm as chaves
+  Object.keys(porMes).forEach(m=>{
+    porMes[m].valCb=porMes[m].valCb||0;
+    porMes[m].nCb=porMes[m].nCb||0;
   });
   const OM={'janeiro':1,'fevereiro':2,'março':3,'abril':4,'maio':5,'junho':6,
             'julho':7,'agosto':8,'setembro':9,'outubro':10,'novembro':11,'dezembro':12};
@@ -843,18 +840,25 @@ function updateKPIs(){
     if(ya!==yb) return ya-yb;
     return (OM[pa[0].toLowerCase()]||13)-(OM[pb[0].toLowerCase()]||13);
   });
-  const maxV=Math.max(...mOrds.map(m=>porMes[m].val),1);
+  const maxV=Math.max(...mOrds.map(m=>(porMes[m].val||0)+(porMes[m].valCb||0)),1);
   const bodyEl=document.getElementById('fat-meses-body');
   if(bodyEl){
     bodyEl.innerHTML=mOrds.map(m=>{
-      const{val,n}=porMes[m];
-      const pct=Math.round(val/maxV*100);
-      const pctT=valFatTotal>0?Math.round(val/valFatTotal*100):0;
-      return`<div class="kpi-mes-row">
-        <span class="kpi-mes-label">${m}</span>
-        <div class="kpi-mes-bar"><div class="kpi-mes-fill" style="width:${pct}%"></div></div>
-        <span class="kpi-mes-val">${fmtK(val)}</span>
-        <span class="kpi-mes-n">${n} OS&nbsp;·&nbsp;${pctT}%</span>
+      const{val,n,valCb,nCb}=porMes[m];
+      const total=val+(valCb||0);
+      const pct=Math.round(total/maxV*100);
+      const pctT=valFatTotal>0?Math.round(total/valFatTotal*100):0;
+      const detalhes=[];
+      if(val>0) detalhes.push(`<span style="color:var(--green)">📋 ${n} OS planilha: ${fmtK(val)}</span>`);
+      if(valCb>0) detalhes.push(`<span style="color:var(--blue)">✅ ${nCb} marcados: ${fmtK(valCb)}</span>`);
+      return`<div class="kpi-mes-row" style="flex-direction:column;align-items:flex-start;gap:3px;padding-bottom:6px">
+        <div style="display:flex;align-items:center;gap:8px;width:100%">
+          <span class="kpi-mes-label">${m.replace(/-2[56]/,v=>v==='-26'?' 2026':' 2025')}</span>
+          <div class="kpi-mes-bar" style="flex:1"><div class="kpi-mes-fill" style="width:${pct}%"></div></div>
+          <span class="kpi-mes-val" style="font-weight:700">${fmtK(total)}</span>
+          <span class="kpi-mes-n">${pctT}%</span>
+        </div>
+        <div style="font-size:10px;padding-left:4px;display:flex;gap:12px;flex-wrap:wrap">${detalhes.join('')}</div>
       </div>`;
     }).join('')+`<div class="kpi-mes-row" style="border-top:1px solid var(--border);margin-top:3px;padding-top:4px">
       <span class="kpi-mes-label" style="font-weight:600;color:var(--green)">TOTAL</span>
@@ -1098,6 +1102,32 @@ function popularSelMes(){
 
 function getMesFiltro(){ return document.getElementById('sel-mes-kpi')?.value||''; }
 
+
+// ── Filtro mês cards faturados ────────────────────────────────
+function toggleSelMesFat(){
+  const fFat = document.getElementById('fFat')?.value||'';
+  const sel  = document.getElementById('fFatMes');
+  if(!sel) return;
+  // Mostrar só quando filtro é Faturadas ou Prog.+Faturadas
+  sel.style.display = (fFat==='fat'||fFat==='both') ? '' : 'none';
+  if(sel.style.display===''&&sel.options.length<=1){
+    // Popular meses a partir dos REGISTROS marcados como faturados
+    const OM={'janeiro':1,'fevereiro':2,'março':3,'abril':4,'maio':5,'junho':6,
+              'julho':7,'agosto':8,'setembro':9,'outubro':10,'novembro':11,'dezembro':12};
+    const meses=new Set();
+    if(typeof REGISTROS!=='undefined') REGISTROS.forEach(r=>{if(r.mes)meses.add(r.mes);});
+    if(typeof FATURADOS!=='undefined') FATURADOS.forEach(r=>{if(r.mes)meses.add(r.mes);});
+    const sorted=[...meses].sort((a,b)=>{
+      const pa=a.split('-'),pb=b.split('-');
+      const ya=parseInt(pa[1]||0),yb=parseInt(pb[1]||0);
+      if(ya!==yb)return ya-yb;
+      return (OM[pa[0].toLowerCase()]||13)-(OM[pb[0].toLowerCase()]||13);
+    });
+    sorted.forEach(m=>sel.insertAdjacentHTML('beforeend',
+      `<option value="${m}">${m.replace(/-2[56]/,v=>v==='-26'?' 2026':' 2025')}</option>`));
+  }
+}
+
 function toggleFatGrupo(id){
   const body = document.getElementById(id);
   const chev = document.getElementById(id+'-chev');
@@ -1274,6 +1304,7 @@ function render(){
       if(fFat==='prog'&&!isProg)return false;
       if(fFat==='exec'&&!isExec)return false;
       if(fFat==='fat'&&!isFat)return false;
+      if(fFat==='fat'){const fFM=document.getElementById('fFatMes')?.value||'';if(fFM&&r.mes!==fFM)return false;}
       if(fFat==='both'&&!(isFat&&isProg))return false;
       if(q&&![r.unidade,r.supervisor,r.tecnico,r.cliente,r.proposta,r.uf,r.desc,r.os,r.osc,r.status].join(' ').toLowerCase().includes(q))return false;
       return true;
